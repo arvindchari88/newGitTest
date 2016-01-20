@@ -591,7 +591,7 @@ cu2_hover = HoverTool(
 p2.tools.extend([cu2_hover])
 p2.renderers.extend([cu2_rend])
 
-cu2_yield = round(float(len(cu2_accepted))/(float(len(cu2_accepted)) + float(len(t2_failure_re))),2)
+cu2_yield = round(float(len(cu2_accepted))/(float(len(cu2_accepted)) + float(len(t2_failure_pos))),2)
 
 cu2_avg = ColumnDataSource(data=dict(y=[cu2_stats['avg'], cu2_stats['avg']], cl=cl))
 cu2_lower = ColumnDataSource(data=dict(y=[cu2_stats['lcl'], cu2_stats['lcl']]))
@@ -651,7 +651,7 @@ cu1_s.callback = Callback(args=dict(cu1_avg=cu2_avg, cu1_lower=cu2_lower, cu1_up
     """)
 
 p2.line(cu2_idx, .2, line_width=1, legend='Accepted: ' + str(len(cu2_accepted))) #daily accepted
-p2.line(cu2_idx, .5, line_width=1, legend='Rejected: ' + str(len(t2_failure_re))) #daily rejected
+p2.line(cu2_idx, .5, line_width=1, legend='Rejected: ' + str(len(t2_failure_pos))) #daily rejected
 p2.line(cu2_idx, .2, line_width=2, line_color='green')
 p2.line(cu2_idx, .5, line_width=2, line_color='green')
 p2.background_fill = 'beige'

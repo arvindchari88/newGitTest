@@ -219,6 +219,11 @@ def organize_failure(t1_failure_pos) :
   t1_total_failures.extend((t1_general, t1_l_five, t1_r_five, t1_l_one, t1_r_one, t1_l_tab, t1_r_tab, t1_l_five_b, t1_r_five_b, t1_l_one_b, t1_r_one_b, t1_l_tab_b, t1_r_tab_b))
   t1_max_fails = max(len(t1_r_tab), len(t1_l_tab), len(t1_r_one), len(t1_l_one), len(t1_r_five), len(t1_l_five), len(t1_r_tab_b), len(t1_l_tab_b), len(t1_r_one_b), len(t1_l_one_b), len(t1_r_five_b), len(t1_l_five_b))
 
+  #If all the errors produced are located "General", then the length of t1_max_fails was producing a 0
+  #We use t1_max_fails to size the circles on the pareto chart, so if this is zero, you get a divide by zero failure
+  if t1_max_fails == 0:
+    t1_max_fails = 1
+
   return (t1_total_failures, t1_max_fails)
 
 

@@ -13,6 +13,7 @@ import sqlalchemy as sa
 import pyodbc
 from collections import Counter
 from random import randint
+import calendar
 
 ############################################################
 #Graph Grid Failures and Reasons for Failure by Position
@@ -22,22 +23,18 @@ from random import randint
 ############################################################
 
 def yield_by_day(daily_accepted, failure_pos) :
-  current_date_acc = datetime.date(2000,01,01) #Set some arbitrary starting dates
-  current_date_rej = datetime.date(2000,01,01)
-  date_without_time_acc = datetime.date(2000,01,01) #Set some arbitrary starting dates
-  date_without_time_rej = datetime.date(2000,01,01)
-
   list_accept_by_day = [] #Holds the list of lists of each day accepted
   list_reject_by_day = [] #Holds the list of lists of each day rejected
 
   current_date_acc = datetime.date(daily_accepted[0].year, daily_accepted[0].month, daily_accepted[0].day) #Set the first date to be the first date in the set. The daily_accepted is just a set of dates
   accept_by_day = [] #Holds a temporary list of all the dates accepted each day
+  
   for i in range(len(daily_accepted)) :
     date_without_time_acc = datetime.date(daily_accepted[i].year, daily_accepted[i].month, daily_accepted[i].day) 
     if date_without_time_acc == current_date_acc:
-      accept_by_day.append(date_without_time_acc)
+      accept_by_day.append(date_without_time_acc) 
     else:
-      list_accept_by_day.append(accept_by_day)
+      list_accept_by_day.append(accept_by_day) #Creates a list of lists, each list containing the number of grids accepted on a certain day
       accept_by_day = [date_without_time_acc]
       current_date_acc = date_without_time_acc
 
@@ -48,7 +45,7 @@ def yield_by_day(daily_accepted, failure_pos) :
     if date_without_time_rej == current_date_rej:
       reject_by_day.append(failure_pos[i][3]) #Every rejected grid has a failure reason. The lenght of this list determines the number of failures in a day
     else:
-      list_reject_by_day.append(reject_by_day)
+      list_reject_by_day.append(reject_by_day) #A list of lists, each list containing all the errors on a specific day. 
       reject_by_day = [failure_pos[i][3]]
       current_date_rej = date_without_time_rej
 
@@ -58,28 +55,22 @@ def yield_by_day(daily_accepted, failure_pos) :
   if len(list_reject_by_day) == 0:
     list_reject_by_day.append(reject_by_day)
 
-  yield_plot = figure(plot_width=500, plot_height=500, x_axis_label = "Date", y_axis_label="Yield", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title="Yield by Day")
+  yield_plot = figure(plot_width=500, plot_height=500, x_axis_label = "Days into Set", y_axis_label="Yield", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title="Yield by Day")
   temp_yields = []
   temp_dates = []
-  temp_colors = choose_colors(list_reject_by_day)
+  temp_colors = choose_colors(list_reject_by_day)[0]
+  temp_failure_keys = choose_colors(list_reject_by_day)[1]
 
   if len(list_accept_by_day) == len(list_reject_by_day) : #assumes at least 1 grid was accepted and rejected every day. If not, this will fail and create no plot
     for i in range(len(list_accept_by_day)) :
-      temp_yields.append(float(len(list_accept_by_day[i]))/(float(len(list_reject_by_day[i]))+float(len(list_accept_by_day[i]))))
+      i_reverse = len(list_accept_by_day) - (i + 1)
+      temp_yields.append(float(len(list_accept_by_day[i_reverse]))/(float(len(list_reject_by_day[i_reverse]))+float(len(list_accept_by_day[i_reverse]))))
       temp_dates.append(i) ######daily_acc[i][0]##### FOR SOME REASON THIS DOES NOT WORK
       create_circle(temp_dates[i], temp_yields[i], yield_plot, list_reject_by_day[i], .2, temp_colors)
 
   yield_plot.line(temp_dates, temp_yields, color="red")
-  
-  #Create the Legend for the types of failures we see day to day
-  #for legend,color in temp_colors.iteritems() :
-  #  yield_plot.circle(x=0, y=0, radius=0, color=color, legend=legend)
- 
-  #yield_plot.legend.orientation = "bottom_left"
 
   return yield_plot
-
-
 
 ############################################################
 #Graph Grid Failures and Reasons for Failure by Position
@@ -121,16 +112,26 @@ def choose_colors(t1_total_failures):
   t1_total_failures = [item for sublist in t1_total_failures for item in sublist] #Flatten the list to make a single list of all the types of failures
 
   t1_legend = []
-  t1_legend = Counter(t1_total_failures).keys()
+  t1_legend.append(Counter(t1_total_failures).keys())
+  t1_legend.append(Counter(t1_total_failures).values())
 
   colors = {}
-  for i in range(len(t1_legend)):
+  return_legend = {}
+  for i in range(len(t1_legend[0])):
     #colors.append("#" + '%06X' % randint(0, 0xFFFFFF))
-    colors[t1_legend[i]] = "#" + '%06X' % randint(0, 0xFFFFFF)
+    colors[t1_legend[0][i]] = "#" + '%06X' % randint(0, 0xFFFFFF)
+    return_legend[t1_legend[0][i]] = t1_legend[1][i]
 
-  return colors #Returns a dictionary whihc links the type of failure with a given color
+  return (colors, return_legend) #Returns a dictionary whihc links the type of failure with a given color
 
 
+def create_legend(x_pos, y_pos, color_dict, figure, all_failures, num_fails_to_list):
+  #Create the Legend for the types of failures we see day to day
+
+  for legend,color in color_dict.iteritems() :
+    figure.circle(x=x_pos, y=y_pos, radius=0, color=color, legend=legend)
+ 
+  figure.legend.orientation = "bottom_left"
 
 
 #Take a list of failure positions and failure reasons and orgainize them by where they are on the grid, and how frequently they occured
@@ -277,7 +278,7 @@ def failure_pareto(cu1_accepted, t1_failure_pos) :
 
 
   #Create the legend for the chart
-  colors = choose_colors(organized_failures[0])
+  colors = choose_colors(organized_failures[0])[0]
   for legend,color in colors.iteritems() :
     p_t1_fail_pos.circle(x=0, y=0, radius=0, color=color, legend=legend)
   

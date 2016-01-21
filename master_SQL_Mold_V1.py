@@ -30,12 +30,14 @@ import sqlalchemy as sa
 import pyodbc
 from collections import Counter
 from random import randint
-
+import getpass
 
 ##############################################################################
 #II.Connecting to the Database
 ##############################################################################
-cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=182.52.58.33\GTAT_GRIDS\SQLEXPRESS, 1433;DATABASE=GTAT_GRIDS;UID=db1_readonly;PWD=Read_only')
+p = getpass.getpass()
+
+cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=182.52.58.33\GTAT_GRIDS\SQLEXPRESS, 1433;DATABASE=GTAT_GRIDS;UID=db1_readonly;PWD=' + p)
 cursor = cnxn.cursor()
 
 ##############################################################################

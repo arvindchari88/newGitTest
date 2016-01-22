@@ -1,0 +1,51 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/pycparser-2.14-py2.7.egg-info", 
+    "Lib/site-packages/pycparser/__init__.py", 
+    "Lib/site-packages/pycparser/__init__.pyc", 
+    "Lib/site-packages/pycparser/_ast_gen.py", 
+    "Lib/site-packages/pycparser/_ast_gen.pyc", 
+    "Lib/site-packages/pycparser/_build_tables.py", 
+    "Lib/site-packages/pycparser/_build_tables.pyc", 
+    "Lib/site-packages/pycparser/_c_ast.cfg", 
+    "Lib/site-packages/pycparser/ast_transforms.py", 
+    "Lib/site-packages/pycparser/ast_transforms.pyc", 
+    "Lib/site-packages/pycparser/c_ast.py", 
+    "Lib/site-packages/pycparser/c_ast.pyc", 
+    "Lib/site-packages/pycparser/c_generator.py", 
+    "Lib/site-packages/pycparser/c_generator.pyc", 
+    "Lib/site-packages/pycparser/c_lexer.py", 
+    "Lib/site-packages/pycparser/c_lexer.pyc", 
+    "Lib/site-packages/pycparser/c_parser.py", 
+    "Lib/site-packages/pycparser/c_parser.pyc", 
+    "Lib/site-packages/pycparser/lextab.py", 
+    "Lib/site-packages/pycparser/lextab.pyc", 
+    "Lib/site-packages/pycparser/ply/__init__.py", 
+    "Lib/site-packages/pycparser/ply/__init__.pyc", 
+    "Lib/site-packages/pycparser/ply/cpp.py", 
+    "Lib/site-packages/pycparser/ply/cpp.pyc", 
+    "Lib/site-packages/pycparser/ply/ctokens.py", 
+    "Lib/site-packages/pycparser/ply/ctokens.pyc", 
+    "Lib/site-packages/pycparser/ply/lex.py", 
+    "Lib/site-packages/pycparser/ply/lex.pyc", 
+    "Lib/site-packages/pycparser/ply/yacc.py", 
+    "Lib/site-packages/pycparser/ply/yacc.pyc", 
+    "Lib/site-packages/pycparser/plyparser.py", 
+    "Lib/site-packages/pycparser/plyparser.pyc", 
+    "Lib/site-packages/pycparser/yacctab.py", 
+    "Lib/site-packages/pycparser/yacctab.pyc"
+  ], 
+  "license": "BSD", 
+  "name": "pycparser", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "2.14"
+}

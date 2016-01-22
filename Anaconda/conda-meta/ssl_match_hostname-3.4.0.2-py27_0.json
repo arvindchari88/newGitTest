@@ -1,0 +1,23 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/backports.ssl_match_hostname-3.4.0.2-py2.7.egg-info", 
+    "Lib/site-packages/backports/__init__.py", 
+    "Lib/site-packages/backports/__init__.pyc", 
+    "Lib/site-packages/backports/ssl_match_hostname/LICENSE.txt", 
+    "Lib/site-packages/backports/ssl_match_hostname/README.txt", 
+    "Lib/site-packages/backports/ssl_match_hostname/__init__.py", 
+    "Lib/site-packages/backports/ssl_match_hostname/__init__.pyc"
+  ], 
+  "name": "ssl_match_hostname", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "3.4.0.2"
+}

@@ -1,0 +1,12 @@
+{
+  "menu_items": [
+    {
+      "icon": "${MENU_DIR}/launcher.ico", 
+      "name": "Launcher", 
+      "script": "node-webkit/nw.exe", 
+      "scriptargument": "${PREFIX}/node-webkit/launcher", 
+      "workdir": "${PERSONALDIR}/Python Scripts"
+    }
+  ], 
+  "menu_name": "Anaconda (64-bit)"
+}

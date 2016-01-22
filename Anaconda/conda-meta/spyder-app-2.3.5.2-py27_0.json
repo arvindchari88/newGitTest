@@ -1,0 +1,23 @@
+{
+  "app_entry": "spyder", 
+  "app_type": "desk", 
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*", 
+    "spyder 2.3.5.2"
+  ], 
+  "files": [], 
+  "icon": "9779607c273dc0786bd972b4cb308b58.png", 
+  "license": "MIT", 
+  "name": "spyder-app", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7", 
+    "spyder 2.3.5.2"
+  ], 
+  "summary": "Scientific Python Development Environment", 
+  "type": "app", 
+  "version": "2.3.5.2"
+}

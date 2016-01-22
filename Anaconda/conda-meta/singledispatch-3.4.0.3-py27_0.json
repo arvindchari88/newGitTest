@@ -1,0 +1,36 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "channel": "https://repo.continuum.io/pkgs/free/win-64/", 
+  "date": "2015-09-11", 
+  "depends": [
+    "python 2.7*", 
+    "six"
+  ], 
+  "files": [
+    "Lib/site-packages/singledispatch-3.4.0.3-py2.7.egg-info/PKG-INFO", 
+    "Lib/site-packages/singledispatch-3.4.0.3-py2.7.egg-info/SOURCES.txt", 
+    "Lib/site-packages/singledispatch-3.4.0.3-py2.7.egg-info/dependency_links.txt", 
+    "Lib/site-packages/singledispatch-3.4.0.3-py2.7.egg-info/requires.txt", 
+    "Lib/site-packages/singledispatch-3.4.0.3-py2.7.egg-info/top_level.txt", 
+    "Lib/site-packages/singledispatch-3.4.0.3-py2.7.egg-info/zip-safe", 
+    "Lib/site-packages/singledispatch.py", 
+    "Lib/site-packages/singledispatch.pyc", 
+    "Lib/site-packages/singledispatch_helpers.py", 
+    "Lib/site-packages/singledispatch_helpers.pyc"
+  ], 
+  "license": "MIT", 
+  "link": {
+    "source": "C:\\Users\\arvind.chari\\AppData\\Local\\Continuum\\Anaconda\\pkgs\\singledispatch-3.4.0.3-py27_0", 
+    "type": "hard-link"
+  }, 
+  "md5": "523bdc24f8e1ec5277b2f94bb33120b7", 
+  "name": "singledispatch", 
+  "platform": "win", 
+  "requires": [], 
+  "size": 11978, 
+  "subdir": "win-64", 
+  "url": "https://repo.continuum.io/pkgs/free/win-64/singledispatch-3.4.0.3-py27_0.tar.bz2", 
+  "version": "3.4.0.3"
+}

@@ -1,0 +1,52 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_1", 
+  "build_number": 1, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/beautifulsoup4-4.3.2-py2.7.egg-info", 
+    "Lib/site-packages/bs4/__init__.py", 
+    "Lib/site-packages/bs4/__init__.pyc", 
+    "Lib/site-packages/bs4/builder/__init__.py", 
+    "Lib/site-packages/bs4/builder/__init__.pyc", 
+    "Lib/site-packages/bs4/builder/_html5lib.py", 
+    "Lib/site-packages/bs4/builder/_html5lib.pyc", 
+    "Lib/site-packages/bs4/builder/_htmlparser.py", 
+    "Lib/site-packages/bs4/builder/_htmlparser.pyc", 
+    "Lib/site-packages/bs4/builder/_lxml.py", 
+    "Lib/site-packages/bs4/builder/_lxml.pyc", 
+    "Lib/site-packages/bs4/dammit.py", 
+    "Lib/site-packages/bs4/dammit.pyc", 
+    "Lib/site-packages/bs4/diagnose.py", 
+    "Lib/site-packages/bs4/diagnose.pyc", 
+    "Lib/site-packages/bs4/element.py", 
+    "Lib/site-packages/bs4/element.pyc", 
+    "Lib/site-packages/bs4/testing.py", 
+    "Lib/site-packages/bs4/testing.pyc", 
+    "Lib/site-packages/bs4/tests/__init__.py", 
+    "Lib/site-packages/bs4/tests/__init__.pyc", 
+    "Lib/site-packages/bs4/tests/test_builder_registry.py", 
+    "Lib/site-packages/bs4/tests/test_builder_registry.pyc", 
+    "Lib/site-packages/bs4/tests/test_docs.py", 
+    "Lib/site-packages/bs4/tests/test_docs.pyc", 
+    "Lib/site-packages/bs4/tests/test_html5lib.py", 
+    "Lib/site-packages/bs4/tests/test_html5lib.pyc", 
+    "Lib/site-packages/bs4/tests/test_htmlparser.py", 
+    "Lib/site-packages/bs4/tests/test_htmlparser.pyc", 
+    "Lib/site-packages/bs4/tests/test_lxml.py", 
+    "Lib/site-packages/bs4/tests/test_lxml.pyc", 
+    "Lib/site-packages/bs4/tests/test_soup.py", 
+    "Lib/site-packages/bs4/tests/test_soup.pyc", 
+    "Lib/site-packages/bs4/tests/test_tree.py", 
+    "Lib/site-packages/bs4/tests/test_tree.pyc"
+  ], 
+  "license": "PSF, MIT", 
+  "name": "beautiful-soup", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "4.3.2"
+}

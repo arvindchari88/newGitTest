@@ -1,0 +1,18 @@
+<form class="form-horizontal">
+  <div class="control-group">
+    <label class="control-label" for="envName">New Environment Name</label>
+    <div class="controls">
+      <input type="text" id="envName" placeholder="Name" class="required">
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="envPython">Python Version</label>
+    <div class="controls">
+      <select class="required" id="envPython">
+        <% for version in @versions: %>
+        <option <% if version == @python_version: %>selected<% end %>><%= version %></option>
+        <% end %>
+      </select>
+    </div>
+  </div>
+</form>

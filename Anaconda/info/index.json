@@ -1,0 +1,11 @@
+{
+  "arch": "x86_64", 
+  "build": "x0", 
+  "build_channel": "x", 
+  "build_number": 0, 
+  "depends": [], 
+  "name": "_cache", 
+  "platform": "win", 
+  "requires": [], 
+  "version": "0.0"
+}

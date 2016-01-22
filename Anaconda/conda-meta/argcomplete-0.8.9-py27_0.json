@@ -1,0 +1,37 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*", 
+    "setuptools"
+  ], 
+  "files": [
+    "Lib/site-packages/argcomplete-0.8.9-py2.7.egg-info", 
+    "Lib/site-packages/argcomplete/__init__.py", 
+    "Lib/site-packages/argcomplete/__init__.pyc", 
+    "Lib/site-packages/argcomplete/bash_completion.d/python-argcomplete.sh", 
+    "Lib/site-packages/argcomplete/compat.py", 
+    "Lib/site-packages/argcomplete/compat.pyc", 
+    "Lib/site-packages/argcomplete/completers.py", 
+    "Lib/site-packages/argcomplete/completers.pyc", 
+    "Lib/site-packages/argcomplete/my_argparse.py", 
+    "Lib/site-packages/argcomplete/my_argparse.pyc", 
+    "Lib/site-packages/argcomplete/my_shlex.py", 
+    "Lib/site-packages/argcomplete/my_shlex.pyc", 
+    "Scripts/activate-global-python-argcomplete-script.py", 
+    "Scripts/activate-global-python-argcomplete.exe", 
+    "Scripts/python-argcomplete-check-easy-install-script-script.py", 
+    "Scripts/python-argcomplete-check-easy-install-script.exe", 
+    "Scripts/register-python-argcomplete-script.py", 
+    "Scripts/register-python-argcomplete.exe"
+  ], 
+  "license": "Apache", 
+  "name": "argcomplete", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7", 
+    "setuptools 17.1.1"
+  ], 
+  "version": "0.8.9"
+}

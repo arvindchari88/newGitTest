@@ -1,0 +1,7 @@
+pkg: numpy-1.10.1
+dist: numpy-1.10.1-py27_0
+home: http://numpy.scipy.org/
+license: BSD
+has_bin: False
+has_lib: False
+has_py: False

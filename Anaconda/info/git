@@ -1,0 +1,19 @@
+==> git log -n1 <==
+commit 76b7e426d4acb206b68bd314040d59baa68b14ec
+Author: Stefan van der Walt <stefan@sun.ac.za>
+Date:   Wed Apr 1 01:26:38 2015 -0700
+
+    Set version to 0.11.3
+
+==> git describe --tags --dirty <==
+v0.11.3
+
+==> git status <==
+# Not currently on any branch.
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	ANACONDA_DIST.txt
+#	bld.bat
+nothing added to commit but untracked files present (use "git add" to track)
+

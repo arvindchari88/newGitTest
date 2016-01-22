@@ -1,0 +1,13 @@
+prefix=C:/aroot/stage/Library
+exec_prefix=C:/aroot/stage/Library
+libdir=C:/aroot/stage/Library/lib
+sharedlibdir=C:/aroot/stage/Library/lib
+includedir=C:/aroot/stage/Library/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.8
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

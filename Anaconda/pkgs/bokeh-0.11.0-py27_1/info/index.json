@@ -1,0 +1,1 @@
+{"build_number": 1, "name": "bokeh", "license": "New BSD", "platform": "win", "depends": ["futures", "jinja2", "numpy", "python 2.7*", "python-dateutil", "pyyaml", "requests", "six", "tornado >=4.3"], "version": "0.11.0", "build": "py27_1", "arch": "x86_64", "subdir": "win-64"}

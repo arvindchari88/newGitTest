@@ -1,0 +1,20 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/mock-1.0.1-py2.7.egg-info", 
+    "Lib/site-packages/mock.py", 
+    "Lib/site-packages/mock.pyc"
+  ], 
+  "license": "BSD", 
+  "name": "mock", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "1.0.1"
+}

@@ -1,0 +1,11 @@
+bottleneck/src/auto_pyx
+bottleneck/tests
+bottleneck/benchmark
+move
+reduce
+nonreduce
+nonreduce_axis
+bottleneck/src/template
+bottleneck/slow
+bottleneck/src
+bottleneck

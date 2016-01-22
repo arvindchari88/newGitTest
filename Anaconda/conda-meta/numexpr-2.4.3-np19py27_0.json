@@ -1,0 +1,39 @@
+{
+  "arch": "x86_64", 
+  "build": "np19py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "numpy 1.9*", 
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/numexpr-2.4.3-py2.7.egg-info", 
+    "Lib/site-packages/numexpr/__config__.py", 
+    "Lib/site-packages/numexpr/__config__.pyc", 
+    "Lib/site-packages/numexpr/__init__.py", 
+    "Lib/site-packages/numexpr/__init__.pyc", 
+    "Lib/site-packages/numexpr/cpuinfo.py", 
+    "Lib/site-packages/numexpr/cpuinfo.pyc", 
+    "Lib/site-packages/numexpr/expressions.py", 
+    "Lib/site-packages/numexpr/expressions.pyc", 
+    "Lib/site-packages/numexpr/interpreter.pyd", 
+    "Lib/site-packages/numexpr/necompiler.py", 
+    "Lib/site-packages/numexpr/necompiler.pyc", 
+    "Lib/site-packages/numexpr/tests/__init__.py", 
+    "Lib/site-packages/numexpr/tests/__init__.pyc", 
+    "Lib/site-packages/numexpr/tests/test_numexpr.py", 
+    "Lib/site-packages/numexpr/tests/test_numexpr.pyc", 
+    "Lib/site-packages/numexpr/utils.py", 
+    "Lib/site-packages/numexpr/utils.pyc", 
+    "Lib/site-packages/numexpr/version.py", 
+    "Lib/site-packages/numexpr/version.pyc"
+  ], 
+  "license": "MIT", 
+  "name": "numexpr", 
+  "platform": "win", 
+  "requires": [
+    "numpy 1.9", 
+    "python 2.7"
+  ], 
+  "version": "2.4.3"
+}

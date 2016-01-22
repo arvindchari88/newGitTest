@@ -1,0 +1,27 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/enum34-1.0.4-py2.7.egg-info", 
+    "Lib/site-packages/enum/LICENSE", 
+    "Lib/site-packages/enum/README", 
+    "Lib/site-packages/enum/__init__.py", 
+    "Lib/site-packages/enum/__init__.pyc", 
+    "Lib/site-packages/enum/doc/enum.rst", 
+    "Lib/site-packages/enum/enum.py", 
+    "Lib/site-packages/enum/enum.pyc", 
+    "Lib/site-packages/enum/test_enum.py", 
+    "Lib/site-packages/enum/test_enum.pyc"
+  ], 
+  "license": "BSD", 
+  "name": "enum34", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "1.0.4"
+}

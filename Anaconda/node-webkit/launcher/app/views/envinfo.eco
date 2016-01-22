@@ -1,0 +1,6 @@
+<p><b>Prefix:</b> <%= @env.prefix %></p>
+<% if @python?: %>
+   <p><b>Python Version:</b> <%= @python.version %></p>
+   <p><b>Python Build:</b> <%= @python.build %></p>
+<% end %>
+<p><b>Installed Packages:</b> <%= @installedCount %></p>

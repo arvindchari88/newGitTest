@@ -1,0 +1,23 @@
+{
+  "_etag": "\"569b0857-13b\"", 
+  "_mod": "Sun, 17 Jan 2016 03:19:51 GMT", 
+  "_url": "https://repo.continuum.io/pkgs/free/noarch/", 
+  "info": {}, 
+  "packages": {
+    "matplotlib-tests-1.5.1-py_0.tar.bz2": {
+      "build": "py_0", 
+      "build_number": 0, 
+      "depends": [
+        "python"
+      ], 
+      "license": "PSF-based (http://matplotlib.sourceforge.net/users/license.html)", 
+      "license_family": "PSF", 
+      "md5": "23256aaa796a208646b9744860421c44", 
+      "name": "matplotlib-tests", 
+      "sig": null, 
+      "size": 35931550, 
+      "subdir": "noarch", 
+      "version": "1.5.1"
+    }
+  }
+}

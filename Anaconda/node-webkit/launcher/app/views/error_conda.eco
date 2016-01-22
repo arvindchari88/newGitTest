@@ -1,0 +1,7 @@
+<div class="alert alert-error alert-block">
+  <h4>Conda Out of Date</h4>
+  <p>Launcher requires Conda version <%= @required.version %> or
+    greater. You have <%= @installed.version %>.</p>
+  <p>Please run <tt>conda update conda</tt> from the command line, then
+  restart Launcher.</p>
+</div>

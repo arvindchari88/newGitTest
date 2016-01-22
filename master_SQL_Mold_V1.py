@@ -12,6 +12,7 @@
 #Password: 0DZ5Mn35eFar
 ##############################################################################
 #I. Importing
+##############################################################################
 
 #User Generated Classes
 import statfunctions
@@ -24,7 +25,7 @@ import sys
 import datetime
 from bokeh.plotting import figure, gridplot, hplot
 from bokeh.io import output_file, show
-from bokeh.models import Callback, ColumnDataSource, GlyphRenderer, Circle, HoverTool, Range1d, LinearAxis
+from bokeh.models import Callback, GlyphRenderer, Circle, HoverTool, Range1d, LinearAxis
 from bokeh.models.widgets import Panel, Tabs
 from bokeh.charts import Bar, Histogram
 import sqlalchemy as sa
@@ -41,10 +42,9 @@ p = getpass.getpass()
 cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=182.52.58.33\GTAT_GRIDS\SQLEXPRESS, 1433;DATABASE=GTAT_GRIDS;UID=db1_readonly;PWD=' + p)
 cursor = cnxn.cursor()
 
-##############################################################################
+
 #Fetch the start and end dates from the user input
 #Assign these dates to variables to use later
-##############################################################################
 first = sys.argv[1]
 last = sys.argv[2]
 first_bt = sys.argv[3]
@@ -52,9 +52,14 @@ last_bt = sys.argv[4]
 first_mandrel = sys.argv[5]
 last_mandrel = sys.argv[6]
 
+
+##############################################################################
+#III.Fetch Data from the Database
+##############################################################################
+
 #############################################################################
 #MECO Tool 1 Copper Data
-#############################################################################
+
 cu1_accepted = [] #A list of datetimes for the grids accepted. The length of the list is the # of accepted grids. Uses datetimes to find the yield/day
 
 cu1_id = []
@@ -227,7 +232,8 @@ for row in rows :
 
 #############################################################################
 #Meco Tool 2 Sn/Pb Data
-#############################################################################
+
+
 cu2_accepted = []
 
 cu2_id = []
@@ -324,7 +330,8 @@ for row in rows_T2 :
 
 #############################################################################
 #Bath Titration Data
-#############################################################################
+
+
 #Copper Information
 copper_sulfate = []
 sulfuric_acid = []
@@ -417,7 +424,6 @@ for row in rows_BT :
 
 #############################################################################
 #Fetch Resistivity Data
-#############################################################################
 
 res_x = []
 res_y = []
@@ -431,7 +437,6 @@ for row in rows_res :
 
 #############################################################################
 #Fetch Mandrel Data from PCB Master
-#############################################################################
 
 cursor.execute("select rd_weight, rd_failureposition, rd_rejectreason, rd_datetm, rd_mandrelid from rundtl where rd_toolno = 'Tool 1' and rd_datetm >= ? and rd_datetm <= ? order by rd_datetm desc", (first_mandrel, last_mandrel))
 rows = cursor.fetchall()
@@ -439,74 +444,35 @@ for row in rows :
   if row[4] != None:
     mandrel_ids.append(row[4]) #, row[0], row[1], row[2], row[3]])
 
-####################################################################################
-#III. Store data into Pandas Dataframe
-
-cu1_data = {'id': pd.Series(cu1_id), 'tool': pd.Series(cu1_tool), 'weight': pd.Series(cu1_weight)} 
-cu1_df = pd.DataFrame(cu1_data)
-
-cu2_data = {'id': pd.Series(cu2_id), 'tool': pd.Series(cu2_tool), 'weight': pd.Series(cu2_weight)} 
-cu2_df = pd.DataFrame(cu2_data)
-
-rejected_T1 = len(t1_failure_pos)
-rejected_T2 = len(t2_failure_pos)
-
-
-#####################################################################################
-#IV. Retrieve data From Pandas to be used in Bokeh
-cl = 2 #control limit multiplier
-
-cu1_ids = list(cu1_df[cu1_df['tool'] == 1].id)
-cu1_weights = list(cu1_df[cu1_df['tool'] == 1].weight)
-cu1_stats = statfunctions.stats(cu1_weights, cl)
-
-cu2_ids = list(cu2_df[cu2_df['tool'] == 2].id)
-cu2_weights = list(cu2_df[cu2_df['tool'] == 2].weight)
-cu2_stats = statfunctions.stats(cu2_weights, cl)
-
-c_thickness_stats = statfunctions.liststats(meco_c_thickness, cl)
-l_thickness_stats = statfunctions.liststats(meco_l_thickness, cl)
-r_thickness_stats = statfunctions.liststats(meco_r_thickness, cl)
-
-sn_thickness_stats = statfunctions.liststats(sn_thickness_y, cl)
-sn_pct_stats = statfunctions.liststats(sn_pct_y, cl)
-
 ######################################################################################
-#V. Start Bokeh Plotting
-
+#III. Start Bokeh Plotting
+######################################################################################
 if first == last:
 	output_file(first + '.html', title=first)
 else:
 	output_file(first + ' to ' + last + '.html', title=first + ' to ' + last)
 
+cl = 2 #control limit multiplier
+
 ######################################################################################
 #Cu1 Plot
 ######################################################################################
-p1 = graph_functions.create_histogram(cu1_stats['avg'], cu1_stats['std'], cu1_weights, 50, 1.2, 1.6)
-
-cu1_yield = round(float(len(cu1_accepted))/(float(len(cu1_accepted)) + float(len(t1_failure_pos))),2)
-
-p1.line(cu1_weight[0], 0, line_width=1, legend='Mean = ' + str(round(cu1_stats['avg'], 3))) #daily rejected
-p1.line(cu1_weight[0], 0, line_width=1, legend='2*Std (Std = ' + str(round(cu1_stats['std'], 3)) + ")") #daily accepted
-p1.line(cu1_weight[0], 0, line_width=1, legend='Yield: ' + str(cu1_yield)) #daily rejected
-p1.line(cu1_weight[0], 0, line_width=1, legend='Accepted: ' + str(len(cu1_accepted))) #daily accepted
-p1.line(cu1_weight[0], 0, line_width=1, legend='Rejected: ' + str(len(t1_failure_pos))) #daily rejected
-
+cu1_stats = statfunctions.stats(cu1_weight, cl)
+p1 = graph_functions.create_histogram(cu1_stats['avg'], cu1_stats['std'], cu1_weight, 50, 1.2, 1.6, cu1_accepted, t1_failure_pos)
 
 ######################################################################################
 #Cu2 Plot
 ######################################################################################
-p2 = graph_functions.create_histogram(cu2_stats['avg'], cu2_stats['std'], cu2_weights, 50, .2, .55)
+cu2_stats = statfunctions.stats(cu2_weight, cl)
+p2 = graph_functions.create_histogram(cu2_stats['avg'], cu2_stats['std'], cu2_weight, 50, .2, .55, cu2_accepted, t2_failure_pos)
 
-cu2_yield = round(float(len(cu2_accepted))/(float(len(cu2_accepted)) + float(len(t2_failure_pos))),2)
-
-p2.line(cu2_weight[0], 0, line_width=1, legend='Mean = ' + str(round(cu2_stats['avg'], 3))) #daily rejected
-p2.line(cu2_weight[0], 0, line_width=1, legend='2*Std (Std = ' + str(round(cu2_stats['std'], 3)) + ")") #daily accepted
-p2.line(cu2_weight[0], 0, line_width=1, legend='Yield: ' + str(cu2_yield)) #daily rejected
-p2.line(cu2_weight[0], 0, line_width=1, legend='Accepted: ' + str(len(cu2_accepted))) #daily accepted
-p2.line(cu2_weight[0], 0, line_width=1, legend='Rejected: ' + str(len(t2_failure_pos))) #daily rejected
-
+######################################################################################
 #Meco GridThicknesses
+######################################################################################
+c_thickness_stats = statfunctions.liststats(meco_c_thickness, cl)
+l_thickness_stats = statfunctions.liststats(meco_l_thickness, cl)
+r_thickness_stats = statfunctions.liststats(meco_r_thickness, cl)
+
 p4a = figure(plot_width=700, plot_height=400, title="Meco Thickness Comparison")
 c_measurements = [1,2,3,4,5,6,7,8]
 l_measurements = [1,5,8]
@@ -567,9 +533,6 @@ p_res = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_l
 p_res.circle(res_x, res_y, fill_color="white", size=8)
 
 res_stats = statfunctions.stats(res_y, cl)
-#res_avg = ColumnDataSource(data=dict(y=[res_stats['avg'], res_stats['avg']], cl=cl))
-#res_lower = ColumnDataSource(data=dict(y=[res_stats['lcl'], res_stats['lcl']]))
-#res_upper = ColumnDataSource(data=dict(y=[res_stats['ucl'], res_stats['ucl']]))
 
 p_res.line(res_x, res_stats['avg'], line_width=2, line_color='red', line_dash=[4,4], legend='Mean = ' + str(round(res_stats['avg'], 3)))
 p_res.line(res_x, res_stats['avg']+2*res_stats['std'], line_width=1, line_color='red', legend='2*Std (Std = ' + str(round(res_stats['std'], 3)) + ")")
@@ -578,6 +541,8 @@ p_res.line(res_x, res_stats['avg']-2*res_stats['std'], line_width=1, line_color=
 ##################################################################
 #Tin Lead Thickness and Percentages
 ##################################################################
+sn_thickness_stats = statfunctions.liststats(sn_thickness_y, cl)
+sn_pct_stats = statfunctions.liststats(sn_pct_y, cl)
 
 p_sn_pct = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Sn Percentage", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title="Tin Percentage")
 p_sn_thickness = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Sn Thickness", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title="Tin Lead Thickness")

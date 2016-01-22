@@ -1,0 +1,439 @@
+# TODO: align clean_xl_data and prepare_xl_data (should work on same dimensions of data)
+
+import os
+import datetime as dt
+import subprocess
+from appscript import app, mactypes
+from appscript import k as kw
+from appscript.reference import CommandError
+import psutil
+import atexit
+from .constants import ColorIndex
+from .utils import rgb_to_int, int_to_rgb
+try:
+    import pandas as pd
+except ImportError:
+    pd = None
+
+# Time types
+time_types = (dt.date, dt.datetime)
+
+
+@atexit.register
+def clean_up():
+    """
+    Since AppleScript cannot access Excel while a Macro is running, we have to run the Python call in a
+    background process which makes the call return immediately: we rely on the StatusBar to give the user
+    feedback.
+    This function is triggered when the interpreter exits and runs the CleanUp Macro in VBA to show any
+    errors and to reset the StatusBar.
+    """
+    if is_excel_running():
+        # Prevents Excel from reopening if it has been closed manually or never been opened
+        try:
+            app('Microsoft Excel').run_VB_macro('CleanUp')
+        except CommandError:
+            # Excel files initiated from Python don't have the xlwings VBA module
+            pass
+
+
+def is_file_open(fullname):
+    """
+    Checks if the file is already open
+    """
+    for proc in psutil.process_iter():
+        if proc.name() == 'Microsoft Excel':
+            for i in proc.open_files():
+                if i.path.lower() == fullname.lower():
+                    return True
+    return False
+
+
+def is_excel_running():
+    for proc in psutil.process_iter():
+        if proc.name() == 'Microsoft Excel':
+            return True
+    return False
+
+
+def get_workbook(fullname):
+    """
+    Get the appscript Workbook object.
+    On Mac, it seems that we don't have to deal with >1 instances of Excel,
+    as each spreadsheet opens in a separate window anyway.
+    """
+    filename = os.path.basename(fullname)
+    xl_workbook = app('Microsoft Excel').workbooks[filename]
+    xl_app = app('Microsoft Excel')
+    return xl_app, xl_workbook
+
+
+def get_workbook_name(xl_workbook):
+    return xl_workbook.name.get()
+
+
+def get_worksheet_name(xl_sheet):
+    return xl_sheet.name.get()
+
+
+def get_xl_sheet(xl_workbook, sheet_name_or_index):
+    return xl_workbook.sheets[sheet_name_or_index]
+
+
+def set_worksheet_name(xl_sheet, value):
+    return xl_sheet.name.set(value)
+
+
+def get_worksheet_index(xl_sheet):
+    return xl_sheet.entry_index.get()
+
+
+def get_app(xl_workbook):
+    # Since we can't have multiple instances of Excel on Mac (?), we ignore xl_workbook
+    return app('Microsoft Excel')
+
+
+def open_workbook(fullname):
+    filename = os.path.basename(fullname)
+    xl_app = app('Microsoft Excel')
+    xl_app.open(fullname)
+    xl_workbook = xl_app.workbooks[filename]
+    return xl_app, xl_workbook
+
+
+def close_workbook(xl_workbook):
+    xl_workbook.close(saving=kw.no)
+
+
+def new_workbook():
+    is_running = is_excel_running()
+
+    xl_app = app('Microsoft Excel')
+
+    if is_running:
+        # If Excel is being fired up, a "Workbook1" is automatically added
+        # If its already running, we create an new one that Excel unfortunately calls "Sheet1".
+        # It's a feature though: See p.14 on Excel 2004 AppleScript Reference
+        xl_workbook = xl_app.make(new=kw.workbook)
+    else:
+        xl_workbook = xl_app.workbooks[1]
+
+    return xl_app, xl_workbook
+
+
+def get_active_sheet(xl_workbook):
+    return xl_workbook.active_sheet
+
+
+def activate_sheet(xl_workbook, sheet_name_or_index):
+    return xl_workbook.sheets[sheet_name_or_index].activate_object()
+
+
+def get_worksheet(xl_workbook, sheet_name_or_index):
+    return xl_workbook.sheets[sheet_name_or_index]
+
+
+def get_first_row(xl_sheet, range_address):
+    return xl_sheet.cells[range_address].first_row_index.get()
+
+
+def get_first_column(xl_sheet, range_address):
+    return xl_sheet.cells[range_address].first_column_index.get()
+
+
+def count_rows(xl_sheet, range_address):
+    return xl_sheet.cells[range_address].count(each=kw.row)
+
+
+def count_columns(xl_sheet, range_address):
+    return xl_sheet.cells[range_address].count(each=kw.column)
+
+
+def get_range_from_indices(xl_sheet, first_row, first_column, last_row, last_column):
+    first_address = xl_sheet.columns[first_column].rows[first_row].get_address()
+    last_address = xl_sheet.columns[last_column].rows[last_row].get_address()
+    return xl_sheet.cells['{0}:{1}'.format(first_address, last_address)]
+
+
+def get_value_from_range(xl_range):
+    return xl_range.value.get()
+
+
+def get_value_from_index(xl_sheet, row_index, column_index):
+    return xl_sheet.columns[column_index].rows[row_index].value.get()
+
+
+def clean_xl_data(data):
+    """
+    appscript returns empty cells as ''. So we replace those with None to be in line with pywin32
+    """
+    return [[None if c == '' else c for c in row] for row in data]
+
+
+def prepare_xl_data(data):
+    # This transformation seems to be only needed on Python 2.6 (?)
+    if hasattr(pd, 'tslib') and isinstance(data, pd.tslib.Timestamp):
+        data = data.to_datetime()
+    return data
+
+
+def set_value(xl_range, data):
+    xl_range.value.set(data)
+
+
+def get_selection_address(xl_app):
+    return str(xl_app.selection.get_address())
+
+
+def clear_contents_worksheet(xl_workbook, sheets_name_or_index):
+    xl_workbook.sheets[sheets_name_or_index].used_range.clear_contents()
+
+
+def clear_worksheet(xl_workbook, sheet_name_or_index):
+    xl_workbook.sheets[sheet_name_or_index].used_range.clear_range()
+
+
+def clear_contents_range(xl_range):
+    app('Microsoft Excel').screen_updating.set(False)
+    xl_range.clear_contents()
+    app('Microsoft Excel').screen_updating.set(True)
+
+def clear_range(xl_range):
+    app('Microsoft Excel').screen_updating.set(False)
+    xl_range.clear_range()
+    app('Microsoft Excel').screen_updating.set(True)
+
+def get_formula(xl_range):
+    return xl_range.formula.get()
+
+
+def set_formula(xl_range, value):
+    xl_range.formula.set(value)
+
+
+def get_row_index_end_down(xl_sheet, row_index, column_index):
+    ix = xl_sheet.columns[column_index].rows[row_index].get_end(direction=kw.toward_the_bottom).first_row_index.get()
+    return ix
+
+
+def get_column_index_end_right(xl_sheet, row_index, column_index):
+    ix = xl_sheet.columns[column_index].rows[row_index].get_end(direction=kw.toward_the_right).first_column_index.get()
+    return ix
+
+
+def get_current_region_address(xl_sheet, row_index, column_index):
+    return str(xl_sheet.columns[column_index].rows[row_index].current_region.get_address())
+
+
+def get_chart_object(xl_workbook, sheet_name_or_index, chart_name_or_index):
+    return xl_workbook.sheets[sheet_name_or_index].chart_objects[chart_name_or_index]
+
+
+def get_chart_index(xl_chart):
+    return xl_chart.entry_index.get()
+
+
+def get_chart_name(xl_chart):
+    return xl_chart.name.get()
+
+
+def add_chart(xl_workbook, sheet_name_or_index, left, top, width, height):
+    # With the sheet name it won't find the chart later, so we go with the index (no idea why)
+    sheet_index = xl_workbook.sheets[sheet_name_or_index].entry_index.get()
+    return xl_workbook.make(at=xl_workbook.sheets[sheet_index],
+                            new=kw.chart_object,
+                            with_properties={kw.width: width,
+                                             kw.top: top,
+                                             kw.left_position: left,
+                                             kw.height: height})
+
+
+def set_chart_name(xl_chart, name):
+    xl_chart.name.set(name)
+
+
+def set_source_data_chart(xl_chart, xl_range):
+    xl_chart.chart.set_source_data(source=xl_range)
+
+
+def get_chart_type(xl_chart):
+    return xl_chart.chart.chart_type.get()
+
+
+def set_chart_type(xl_chart, chart_type):
+    xl_chart.chart.chart_type.set(chart_type)
+
+
+def activate_chart(xl_chart):
+    """
+    activate() doesn't seem to do anything so resolving to select() for now
+    """
+    xl_chart.select()
+
+
+def autofit(range_, axis):
+    address = range_.xl_range.get_address()
+    app('Microsoft Excel').screen_updating.set(False)
+    if axis == 'rows' or axis == 'r':
+        range_.xl_sheet.rows[address].autofit()
+    elif axis == 'columns' or axis == 'c':
+        range_.xl_sheet.columns[address].autofit()
+    elif axis is None:
+        range_.xl_sheet.rows[address].autofit()
+        range_.xl_sheet.columns[address].autofit()
+    app('Microsoft Excel').screen_updating.set(True)
+
+
+def autofit_sheet(sheet, axis):
+    #TODO: combine with autofit that works on Range objects
+    num_columns = sheet.xl_sheet.count(each=kw.column)
+    num_rows = sheet.xl_sheet.count(each=kw.row)
+    xl_range = get_range_from_indices(sheet.xl_sheet, 1, 1, num_rows, num_columns)
+    address = xl_range.get_address()
+    app('Microsoft Excel').screen_updating.set(False)
+    if axis == 'rows' or axis == 'r':
+        sheet.xl_sheet.rows[address].autofit()
+    elif axis == 'columns' or axis == 'c':
+        sheet.xl_sheet.columns[address].autofit()
+    elif axis is None:
+        sheet.xl_sheet.rows[address].autofit()
+        sheet.xl_sheet.columns[address].autofit()
+    app('Microsoft Excel').screen_updating.set(True)
+
+
+def set_xl_workbook_current(xl_workbook):
+    global xl_workbook_current
+    xl_workbook_current = xl_workbook
+
+
+def get_xl_workbook_current():
+    try:
+        return xl_workbook_current
+    except NameError:
+        return None
+
+
+def get_number_format(range_):
+    return range_.xl_range.number_format.get()
+
+
+def set_number_format(range_, value):
+    app('Microsoft Excel').screen_updating.set(False)
+    range_.xl_range.number_format.set(value)
+    app('Microsoft Excel').screen_updating.set(True)
+
+
+def get_address(xl_range, row_absolute, col_absolute, external):
+    return xl_range.get_address(row_absolute=row_absolute, column_absolute=col_absolute, external=external)
+
+
+def add_sheet(xl_workbook, before, after):
+    if before:
+        position = before.xl_sheet.before
+    else:
+        position = after.xl_sheet.after
+    return xl_workbook.make(new=kw.worksheet, at=position)
+
+
+def count_worksheets(xl_workbook):
+    return xl_workbook.count(each=kw.worksheet)
+
+
+def get_hyperlink_address(xl_range):
+    try:
+        return xl_range.hyperlinks[1].address.get()
+    except CommandError:
+        raise Exception("The cell doesn't seem to contain a hyperlink!")
+
+
+def set_hyperlink(xl_range, address, text_to_display=None, screen_tip=None):
+    xl_range.make(at=xl_range, new=kw.hyperlink, with_properties={kw.address: address,
+                                                                  kw.text_to_display: text_to_display,
+                                                                  kw.screen_tip: screen_tip})
+
+
+def set_color(xl_range, color_or_rgb):
+    if color_or_rgb is None:
+        xl_range.interior_object.color_index.set(ColorIndex.xlColorIndexNone)
+    elif isinstance(color_or_rgb, int):
+        xl_range.interior_object.color.set(int_to_rgb(color_or_rgb))
+    else:
+        xl_range.interior_object.color.set(color_or_rgb)
+
+
+def get_color(xl_range):
+    if xl_range.interior_object.color_index.get() == kw.color_index_none:
+        return None
+    else:
+        return tuple(xl_range.interior_object.color.get())
+
+
+def get_xl_workbook_from_xl(fullname):
+    """
+    Doesn't really do anything on Mac, but on Windows, this is needed due to some
+    Workbooks not turning up in the RunningObjectTable
+    """
+    return get_workbook(fullname)[1]
+
+
+def save_workbook(xl_workbook, path):
+    saved_path = xl_workbook.properties().get(kw.path)
+    if (saved_path != '') and (path is None):
+        # Previously saved: Save under existing name
+        xl_workbook.save()
+    elif (saved_path == '') and (path is None):
+        # Previously unsaved: Save under current name in current working directory
+        path = os.path.join(os.getcwd(), xl_workbook.name.get() + '.xlsx')
+        dir_name, file_name = os.path.split(path)
+        dir_name_hfs = mactypes.Alias(dir_name).hfspath  # turn into HFS path format
+        hfs_path = dir_name_hfs + ':' + file_name
+        xl_workbook.save_workbook_as(filename=hfs_path, overwrite=True)
+    elif path:
+        # Save under new name/location
+        dir_name, file_name = os.path.split(path)
+        dir_name_hfs = mactypes.Alias(dir_name).hfspath  # turn into HFS path format
+        hfs_path = dir_name_hfs + ':' + file_name
+        xl_workbook.save_workbook_as(filename=hfs_path, overwrite=True)
+
+
+def open_template(fullpath):
+    subprocess.call(['open', fullpath])
+
+
+def set_visible(xl_app, visible):
+    if visible:
+        xl_app.activate()
+    else:
+        app('System Events').processes['Microsoft Excel'].visible.set(visible)
+
+
+def get_visible(xl_app):
+    return app('System Events').processes['Microsoft Excel'].visible.get()
+
+
+def get_fullname(xl_workbook):
+    hfs_path = xl_workbook.properties().get(kw.full_name)
+    if hfs_path == xl_workbook.properties().get(kw.name):
+        return hfs_path
+    url = mactypes.convertpathtourl(hfs_path, 1)  # kCFURLHFSPathStyle = 1
+    return mactypes.converturltopath(url, 0)  # kCFURLPOSIXPathStyle = 0
+
+
+def quit_app(xl_app):
+    xl_app.quit(saving=kw.no)
+
+
+def get_screen_updating(xl_app):
+    return xl_app.screen_updating.get()
+
+
+def set_screen_updating(xl_app, value):
+    xl_app.screen_updating.set(value)
+
+
+def get_calculation(xl_app):
+    return xl_app.calculation.get()
+
+
+def set_calculation(xl_app, value):
+    xl_app.calculation.set(value)

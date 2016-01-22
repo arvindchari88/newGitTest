@@ -1,0 +1,814 @@
+# -*- coding: utf-8 -*-
+# To run a single TestClass: nosetests -q -s test_xlwings:TestRange
+# To run a single Test: nosetests -q -s test_xlwings:TestRange.test_
+
+from __future__ import unicode_literals
+import os
+import sys
+import nose
+from nose.tools import assert_equal
+from datetime import datetime, date
+from xlwings import Workbook, Sheet, Range, Chart, ChartType, RgbColor, Calculation
+if sys.platform.startswith('darwin'):
+    from appscript import k as kw
+
+# Optional imports
+try:
+    import numpy as np
+    from numpy.testing import assert_array_equal
+except ImportError:
+    np = None
+try:
+    import pandas as pd
+    from pandas import DataFrame, Series
+    from pandas.util.testing import assert_frame_equal, assert_series_equal
+except ImportError:
+    pd = None
+
+
+# Test data
+data = [[1, 2.222, 3.333],
+        ['Test1', None, 'éöà'],
+        [datetime(1962, 11, 3), datetime(2020, 12, 31, 12, 12, 20), 9.999]]
+
+test_date_1 = datetime(1962, 11, 3)
+test_date_2 = datetime(2020, 12, 31, 12, 12, 20)
+
+list_row_1d = [1.1, None, 3.3]
+list_row_2d = [[1.1, None, 3.3]]
+list_col = [[1.1], [None], [3.3]]
+chart_data = [['one', 'two'], [1.1, 2.2]]
+
+if np is not None:
+    array_1d = np.array([1.1, 2.2, np.nan, -4.4])
+    array_2d = np.array([[1.1, 2.2, 3.3], [-4.4, 5.5, np.nan]])
+
+if pd is not None:
+    series_1 = pd.Series([1.1, 3.3, 5., np.nan, 6., 8.])
+
+    rng = pd.date_range('1/1/2012', periods=10, freq='D')
+    timeseries_1 = pd.Series(np.arange(len(rng)) + 0.1, rng)
+    timeseries_1[1] = np.nan
+
+    df_1 = pd.DataFrame([[1, 'test1'],
+                         [2, 'test2'],
+                         [np.nan, None],
+                         [3.3, 'test3']], columns=['a', 'b'])
+
+    df_2 = pd.DataFrame([1, 3, 5, np.nan, 6, 8], columns=['col1'])
+
+    df_dateindex = pd.DataFrame(np.arange(50).reshape(10,5) + 0.1, index=rng)
+
+    # MultiIndex (Index)
+    tuples = list(zip(*[['bar', 'bar', 'baz', 'baz', 'foo', 'foo', 'qux', 'qux'],
+                        ['one', 'two', 'one', 'two', 'one', 'two', 'one', 'two'],
+                        ['x', 'x', 'x', 'x', 'y', 'y', 'y', 'y']]))
+    index = pd.MultiIndex.from_tuples(tuples, names=['first', 'second', 'third'])
+    df_multiindex = pd.DataFrame([[1.1, 2.2], [3.3, 4.4], [5.5, 6.6], [7.7, 8.8], [9.9, 10.10],
+                                  [11.11, 12.12],[13.13, 14.14], [15.15, 16.16]], index=index)
+
+    # MultiIndex (Header)
+    header = [['Foo', 'Foo', 'Bar', 'Bar', 'Baz'], ['A', 'B', 'C', 'D', 'E']]
+
+    df_multiheader = pd.DataFrame([[0.0, 1.0, 2.0, 3.0, 4.0],
+                                   [0.0, 1.0, 2.0, 3.0, 4.0],
+                                   [0.0, 1.0, 2.0, 3.0, 4.0],
+                                   [0.0, 1.0, 2.0, 3.0, 4.0],
+                                   [0.0, 1.0, 2.0, 3.0, 4.0],
+                                   [0.0, 1.0, 2.0, 3.0, 4.0]], columns=pd.MultiIndex.from_arrays(header))
+
+
+# Test skips and fixtures
+def _skip_if_no_numpy():
+    if np is None:
+        raise nose.SkipTest('numpy missing')
+
+
+def _skip_if_no_pandas():
+    if pd is None:
+        raise nose.SkipTest('pandas missing')
+
+
+class TestApplication:
+    def setUp(self):
+        # Connect to test file and make Sheet1 the active sheet
+        xl_file1 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_workbook_1.xlsx')
+        self.wb = Workbook(xl_file1, app_visible=False)
+        Sheet('Sheet1').activate()
+
+    def tearDown(self):
+        self.wb.close()
+
+    def test_screen_updating(self):
+        self.wb.application.screen_updating = False
+        assert_equal(self.wb.application.screen_updating, False)
+
+        self.wb.application.screen_updating = True
+        assert_equal(self.wb.application.screen_updating, True)
+
+    def test_calculation(self):
+        Range('A1').value = 2
+        Range('B1').formula = '=A1 * 2'
+        self.wb.application.calculation = Calculation.xlCalculationManual
+        Range('A1').value = 4
+
+        assert_equal(Range('B1').value, 4)
+        self.wb.application.calculation = Calculation.xlCalculationAutomatic
+        assert_equal(Range('B1').value, 8)
+
+class TestWorkbook:
+    def setUp(self):
+        # Connect to test file and make Sheet1 the active sheet
+        xl_file1 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_workbook_1.xlsx')
+        self.wb = Workbook(xl_file1, app_visible=False)
+        Sheet('Sheet1').activate()
+
+    def tearDown(self):
+        self.wb.close()
+
+    def test_name(self):
+        assert_equal(self.wb.name, 'test_workbook_1.xlsx')
+
+    def test_active_sheet(self):
+        assert_equal(self.wb.active_sheet.name, 'Sheet1')
+
+    def test_current(self):
+        assert_equal(self.wb.xl_workbook, Workbook.current().xl_workbook)
+
+    def test_set_current(self):
+        wb2 = Workbook(app_visible=False)
+        assert_equal(Workbook.current().xl_workbook, wb2.xl_workbook)
+        self.wb.set_current()
+        assert_equal(Workbook.current().xl_workbook, self.wb.xl_workbook)
+        wb2.close()
+
+    def test_get_selection(self):
+        Range('A1').value = 1000
+        assert_equal(self.wb.get_selection().value, 1000)
+
+    def test_reference_two_unsaved_wb(self):
+        """Covers GH Issue #63"""
+        wb1 = Workbook(app_visible=False)
+        wb2 = Workbook(app_visible=False)
+
+        Range('A1').value = 2.  # wb2
+        Range('A1', wkb=wb1).value = 1.  # wb1
+
+        assert_equal(Range('A1').value, 2.)
+        assert_equal(Range('A1', wkb=wb1).value, 1.)
+
+        wb1.close()
+        wb2.close()
+
+    def test_save_naked(self):
+
+        cwd = os.getcwd()
+        wb1 = Workbook(app_visible=False)
+        target_file_path = os.path.join(cwd, wb1.name + '.xlsx')
+        if os.path.isfile(target_file_path):
+            os.remove(target_file_path)
+
+        wb1.save()
+
+        assert_equal(os.path.isfile(target_file_path), True)
+
+        wb2 = Workbook(target_file_path, app_visible=False)
+        wb2.close()
+
+        if os.path.isfile(target_file_path):
+            os.remove(target_file_path)
+
+    def test_save_path(self):
+
+        cwd = os.getcwd()
+        wb1 = Workbook(app_visible=False)
+        target_file_path = os.path.join(cwd, 'TestFile.xlsx')
+        if os.path.isfile(target_file_path):
+            os.remove(target_file_path)
+
+        wb1.save(target_file_path)
+
+        assert_equal(os.path.isfile(target_file_path), True)
+
+        wb2 = Workbook(target_file_path, app_visible=False)
+        wb2.close()
+
+        if os.path.isfile(target_file_path):
+            os.remove(target_file_path)
+
+    def test_mock_caller(self):
+        Workbook.set_mock_caller(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_workbook_1.xlsx'))
+        wb = Workbook.caller()
+        Range('A1', wkb=wb).value = 333
+        assert_equal(Range('A1', wkb=wb).value, 333)
+
+
+class TestSheet:
+    def setUp(self):
+        # Connect to test file and make Sheet1 the active sheet
+        xl_file1 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_workbook_1.xlsx')
+        self.wb = Workbook(xl_file1, app_visible=False)
+        Sheet('Sheet1').activate()
+
+    def tearDown(self):
+        self.wb.close()
+
+    def test_activate(self):
+        Sheet('Sheet2').activate()
+        assert_equal(Sheet.active().name, 'Sheet2')
+        Sheet(3).activate()
+        assert_equal(Sheet.active().index, 3)
+
+    def test_name(self):
+        Sheet(1).name = 'NewName'
+        assert_equal(Sheet(1).name, 'NewName')
+
+    def test_index(self):
+        assert_equal(Sheet('Sheet1').index, 1)
+
+    def test_clear_content_active_sheet(self):
+        Range('G10').value = 22
+        Sheet.active().clear_contents()
+        cell = Range('G10').value
+        assert_equal(cell, None)
+
+    def test_clear_active_sheet(self):
+        Range('G10').value = 22
+        Sheet.active().clear()
+        cell = Range('G10').value
+        assert_equal(cell, None)
+
+    def test_clear_content(self):
+        Range('Sheet2', 'G10').value = 22
+        Sheet('Sheet2').clear_contents()
+        cell = Range('Sheet2', 'G10').value
+        assert_equal(cell, None)
+
+    def test_clear(self):
+        Range('Sheet2', 'G10').value = 22
+        Sheet('Sheet2').clear()
+        cell = Range('Sheet2', 'G10').value
+        assert_equal(cell, None)
+
+    def test_autofit(self):
+        Range('Sheet1', 'A1:D4').value = 'test_string'
+        Sheet('Sheet1').autofit()
+        Sheet('Sheet1').autofit('r')
+        Sheet('Sheet1').autofit('c')
+        Sheet('Sheet1').autofit('rows')
+        Sheet('Sheet1').autofit('columns')
+
+    def test_add_before(self):
+        new_sheet = Sheet.add(before='Sheet1')
+        assert_equal(Sheet(1).name, new_sheet.name)
+
+    def test_add_after(self):
+        Sheet.add(after=Sheet.count())
+        assert_equal(Sheet(Sheet.count()).name, Sheet.active().name)
+
+        Sheet.add(after=1)
+        assert_equal(Sheet(2).name, Sheet.active().name)
+
+    def test_add_default(self):
+        # TODO: test call without args properly
+        Sheet.add()
+
+    def test_add_named(self):
+        Sheet.add('test', before=1)
+        assert_equal(Sheet(1).name, 'test')
+
+    def test_count(self):
+        count = Sheet.count()
+        assert_equal(count, 3)
+
+    def test_all(self):
+        all_names = [i.name for i in Sheet.all()]
+        assert_equal(all_names, ['Sheet1', 'Sheet2', 'Sheet3'])
+
+
+class TestRange:
+    def setUp(self):
+        # Connect to test file and make Sheet1 the active sheet
+        xl_file1 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_range_1.xlsx')
+        self.wb = Workbook(xl_file1, app_visible=False)
+        Sheet('Sheet1').activate()
+
+    def tearDown(self):
+        self.wb.close()
+
+    def test_cell(self):
+        params = [('A1', 22),
+                  ((1,1), 22),
+                  ('A1', 22.2222),
+                  ((1,1), 22.2222),
+                  ('A1', 'Test String'),
+                  ((1,1), 'Test String'),
+                  ('A1', 'éöà'),
+                  ((1,1), 'éöà'),
+                  ('A2', test_date_1),
+                  ((2,1), test_date_1),
+                  ('A3', test_date_2),
+                  ((3,1), test_date_2)]
+        for param in params:
+            yield self.check_cell, param[0], param[1]
+
+    def check_cell(self, address, value):
+        # Active Sheet
+        Range(address).value = value
+        cell = Range(address).value
+        assert_equal(cell, value)
+
+        # SheetName
+        Range('Sheet2', address).value = value
+        cell = Range('Sheet2', address).value
+        assert_equal(cell, value)
+
+        # SheetIndex
+        Range(3, address).value = value
+        cell = Range(3, address).value
+        assert_equal(cell, value)
+
+    def test_range_address(self):
+        """ Style: Range('A1:C3') """
+        address = 'C1:E3'
+
+        # Active Sheet
+        Range(address[:2]).value = data  # assign to starting cell only
+        cells = Range(address).value
+        assert_equal(cells, data)
+
+        # Sheetname
+        Range('Sheet2', address).value = data
+        cells = Range('Sheet2', address).value
+        assert_equal(cells, data)
+
+        # Sheetindex
+        Range(3, address).value = data
+        cells = Range(3, address).value
+        assert_equal(cells, data)
+
+    def test_range_index(self):
+        """ Style: Range((1,1), (3,3)) """
+        index1 = (1,3)
+        index2 = (3,5)
+
+        # Active Sheet
+        Range(index1, index2).value = data
+        cells = Range(index1, index2).value
+        assert_equal(cells, data)
+
+        # Sheetname
+        Range('Sheet2', index1, index2).value = data
+        cells = Range('Sheet2', index1, index2).value
+        assert_equal(cells, data)
+
+        # Sheetindex
+        Range(3, index1, index2).value = data
+        cells = Range(3, index1, index2).value
+        assert_equal(cells, data)
+
+    def test_named_range(self):
+        value = 22.222
+        # Active Sheet
+        Range('cell_sheet1').value = value
+        cells = Range('cell_sheet1').value
+        assert_equal(cells, value)
+
+        Range('range_sheet1').value = data
+        cells = Range('range_sheet1').value
+        assert_equal(cells, data)
+
+        # Sheetname
+        Range('Sheet2', 'cell_sheet2').value = value
+        cells = Range('Sheet2', 'cell_sheet2').value
+        assert_equal(cells, value)
+
+        Range('Sheet2', 'range_sheet2').value = data
+        cells = Range('Sheet2', 'range_sheet2').value
+        assert_equal(cells, data)
+
+        # Sheetindex
+        Range(3, 'cell_sheet3').value = value
+        cells = Range(3, 'cell_sheet3').value
+        assert_equal(cells, value)
+
+        Range(3, 'range_sheet3').value = data
+        cells = Range(3, 'range_sheet3').value
+        assert_equal(cells, data)
+
+    def test_array(self):
+        _skip_if_no_numpy()
+
+        # 1d array
+        Range('Sheet6', 'A1').value = array_1d
+        cells = Range('Sheet6', 'A1:D1', asarray=True).value
+        assert_array_equal(cells, array_1d)
+
+        # 2d array
+        Range('Sheet6', 'A4').value = array_2d
+        cells = Range('Sheet6', 'A4', asarray=True).table.value
+        assert_array_equal(cells, array_2d)
+
+        # 1d array (atleast_2d)
+        Range('Sheet6', 'A10').value = array_1d
+        cells = Range('Sheet6', 'A10:D10', asarray=True, atleast_2d=True).value
+        assert_array_equal(cells, np.atleast_2d(array_1d))
+
+        # 2d array (atleast_2d)
+        Range('Sheet6', 'A12').value = array_2d
+        cells = Range('Sheet6', 'A12', asarray=True, atleast_2d=True).table.value
+        assert_array_equal(cells, array_2d)
+
+    def test_vertical(self):
+        Range('Sheet4', 'A10').value = data
+        if sys.platform.startswith('win') and self.wb.xl_app.Version == '14.0':
+            Range('Sheet4', 'A12:B12').xl_range.NumberFormat = 'dd/mm/yyyy'  # Hack for Excel 2010 bug, see GH #43
+        cells = Range('Sheet4', 'A10').vertical.value
+        assert_equal(cells, [row[0] for row in data])
+
+    def test_horizontal(self):
+        Range('Sheet4', 'A20').value = data
+        cells = Range('Sheet4', 'A20').horizontal.value
+        assert_equal(cells, data[0])
+
+    def test_table(self):
+        Range('Sheet4', 'A1').value = data
+        if sys.platform.startswith('win') and self.wb.xl_app.Version == '14.0':
+            Range('Sheet4', 'A3:B3').xl_range.NumberFormat = 'dd/mm/yyyy'  # Hack for Excel 2010 bug, see GH #43
+        cells = Range('Sheet4', 'A1').table.value
+        assert_equal(cells, data)
+
+    def test_list(self):
+
+        # 1d List Row
+        Range('Sheet4', 'A27').value = list_row_1d
+        cells = Range('Sheet4', 'A27:C27').value
+        assert_equal(list_row_1d, cells)
+
+        # 2d List Row
+        Range('Sheet4', 'A29').value = list_row_2d
+        cells = Range('Sheet4', 'A29:C29', atleast_2d=True).value
+        assert_equal(list_row_2d, cells)
+
+        # 1d List Col
+        Range('Sheet4', 'A31').value = list_col
+        cells = Range('Sheet4', 'A31:A33').value
+        assert_equal([i[0] for i in list_col], cells)
+        # 2d List Col
+        cells = Range('Sheet4', 'A31:A33', atleast_2d=True).value
+        assert_equal(list_col, cells)
+
+    def test_is_cell(self):
+        assert_equal(Range('A1').is_cell(), True)
+        assert_equal(Range('A1:B1').is_cell(), False)
+        assert_equal(Range('A1:A2').is_cell(), False)
+        assert_equal(Range('A1:B2').is_cell(), False)
+
+    def test_is_row(self):
+        assert_equal(Range('A1').is_row(), False)
+        assert_equal(Range('A1:B1').is_row(), True)
+        assert_equal(Range('A1:A2').is_row(), False)
+        assert_equal(Range('A1:B2').is_row(), False)
+
+    def test_is_column(self):
+        assert_equal(Range('A1').is_column(), False)
+        assert_equal(Range('A1:B1').is_column(), False)
+        assert_equal(Range('A1:A2').is_column(), True)
+        assert_equal(Range('A1:B2').is_column(), False)
+
+    def test_is_table(self):
+        assert_equal(Range('A1').is_table(), False)
+        assert_equal(Range('A1:B1').is_table(), False)
+        assert_equal(Range('A1:A2').is_table(), False)
+        assert_equal(Range('A1:B2').is_table(), True)
+
+    def test_formula(self):
+        Range('A1').formula = '=SUM(A2:A10)'
+        assert_equal(Range('A1').formula, '=SUM(A2:A10)')
+
+    def test_current_region(self):
+        values = [[1.,2.],[3.,4.]]
+        Range('A20').value = values
+        assert_equal(Range('B21').current_region.value, values)
+
+    def test_clear_content(self):
+        Range('Sheet4', 'G1').value = 22
+        Range('Sheet4', 'G1').clear_contents()
+        cell = Range('Sheet4', 'G1').value
+        assert_equal(cell, None)
+
+    def test_clear(self):
+        Range('Sheet4', 'G1').value = 22
+        Range('Sheet4', 'G1').clear()
+        cell = Range('Sheet4', 'G1').value
+        assert_equal(cell, None)
+
+    def test_dataframe_1(self):
+        _skip_if_no_pandas()
+
+        df_expected = df_1
+        Range('Sheet5', 'A1').value = df_expected
+        cells = Range('Sheet5', 'B1:C5').value
+        df_result = DataFrame(cells[1:], columns=cells[0])
+        assert_frame_equal(df_expected, df_result)
+
+    def test_dataframe_2(self):
+        """ Covers GH Issue #31"""
+        _skip_if_no_pandas()
+
+        df_expected = df_2
+        Range('Sheet5', 'A9').value = df_expected
+        cells = Range('Sheet5', 'B9:B15').value
+        df_result = DataFrame(cells[1:], columns=[cells[0]])
+        assert_frame_equal(df_expected, df_result)
+
+    def test_dataframe_multiindex(self):
+        _skip_if_no_pandas()
+
+        df_expected = df_multiindex
+        Range('Sheet5', 'A20').value = df_expected
+        cells = Range('Sheet5', 'D20').table.value
+        multiindex = Range('Sheet5', 'A20:C28').value
+        ix = pd.MultiIndex.from_tuples(multiindex[1:], names=multiindex[0])
+        df_result = DataFrame(cells[1:], columns=cells[0], index=ix)
+        assert_frame_equal(df_expected, df_result)
+
+    def test_dataframe_multiheader(self):
+        _skip_if_no_pandas()
+
+        df_expected = df_multiheader
+        Range('Sheet5', 'A52').value = df_expected
+        cells = Range('Sheet5', 'B52').table.value
+        df_result = DataFrame(cells[2:], columns=pd.MultiIndex.from_arrays(cells[:2]))
+        assert_frame_equal(df_expected, df_result)
+
+    def test_dataframe_dateindex(self):
+        _skip_if_no_pandas()
+
+        df_expected = df_dateindex
+        Range('Sheet5', 'A100').value = df_expected
+        if sys.platform.startswith('win') and self.wb.xl_app.Version == '14.0':
+            Range('Sheet5', 'A100').vertical.xl_range.NumberFormat = 'dd/mm/yyyy'  # Hack for Excel 2010 bug, see GH #43
+        cells = Range('Sheet5', 'B100').table.value
+        index = Range('Sheet5', 'A101').vertical.value
+        df_result = DataFrame(cells[1:], index=index, columns=cells[0])
+        assert_frame_equal(df_expected, df_result)
+
+    def test_series_1(self):
+        _skip_if_no_pandas()
+
+        series_expected = series_1
+        Range('Sheet5', 'A32').value = series_expected
+        cells = Range('Sheet5', 'B32:B37').value
+        series_result = Series(cells)
+        assert_series_equal(series_expected, series_result)
+
+    def test_timeseries_1(self):
+        _skip_if_no_pandas()
+
+        series_expected = timeseries_1
+        Range('Sheet5', 'A40').value = series_expected
+        if sys.platform.startswith('win') and self.wb.xl_app.Version == '14.0':
+            Range('Sheet5', 'A40').vertical.xl_range.NumberFormat = 'dd/mm/yyyy'  # Hack for Excel 2010 bug, see GH #43
+        cells = Range('Sheet5', 'B40:B49').value
+        date_index = Range('Sheet5', 'A40:A49').value
+        series_result = Series(cells, index=date_index)
+        assert_series_equal(series_expected, series_result)
+
+    def test_none(self):
+        """ Covers GH Issue #16"""
+        # None
+        Range('Sheet1', 'A7').value = None
+        assert_equal(None, Range('Sheet1', 'A7').value)
+        # List
+        Range('Sheet1', 'A7').value = [None, None]
+        assert_equal(None, Range('Sheet1', 'A7').horizontal.value)
+
+    def test_scalar_nan(self):
+        """Covers GH Issue #15"""
+        _skip_if_no_numpy()
+
+        Range('Sheet1', 'A20').value = np.nan
+        assert_equal(None, Range('Sheet1', 'A20').value)
+
+    def test_atleast_2d_scalar(self):
+        """Covers GH Issue #53a"""
+        Range('Sheet1', 'A50').value = 23
+        result = Range('Sheet1', 'A50', atleast_2d=True).value
+        assert_equal([[23]], result)
+
+    def test_atleast_2d_scalar_as_array(self):
+        """Covers GH Issue #53b"""
+        _skip_if_no_numpy()
+
+        Range('Sheet1', 'A50').value = 23
+        result = Range('Sheet1', 'A50', atleast_2d=True, asarray=True).value
+        assert_equal(np.array([[23]]), result)
+
+    def test_autofit_range(self):
+        # TODO: compare col/row widths before/after - not implemented yet
+        Range('Sheet1', 'A1:D4').value = 'test_string'
+        Range('Sheet1', 'A1:D4').autofit()
+        Range('Sheet1', 'A1:D4').autofit('r')
+        Range('Sheet1', 'A1:D4').autofit('c')
+        Range('Sheet1', 'A1:D4').autofit('rows')
+        Range('Sheet1', 'A1:D4').autofit('columns')
+
+    def test_autofit_col(self):
+        # TODO: compare col/row widths before/after - not implemented yet
+        Range('Sheet1', 'A1:D4').value = 'test_string'
+        Range('Sheet1', 'A:D').autofit()
+        Range('Sheet1', 'A:D').autofit('r')
+        Range('Sheet1', 'A:D').autofit('c')
+        Range('Sheet1', 'A:D').autofit('rows')
+        Range('Sheet1', 'A:D').autofit('columns')
+
+    def test_autofit_row(self):
+        # TODO: compare col/row widths before/after - not implemented yet
+        Range('Sheet1', 'A1:D4').value = 'test_string'
+        Range('Sheet1', '1:1000000').autofit()
+        Range('Sheet1', '1:1000000').autofit('r')
+        Range('Sheet1', '1:1000000').autofit('c')
+        Range('Sheet1', '1:1000000').autofit('rows')
+        Range('Sheet1', '1:1000000').autofit('columns')
+
+    def test_number_format_cell(self):
+        format_string = "mm/dd/yy;@"
+        Range('Sheet1', 'A1').number_format = format_string
+        result = Range('Sheet1', 'A1').number_format
+        assert_equal(format_string, result)
+
+    def test_number_format_range(self):
+        format_string = "mm/dd/yy;@"
+        Range('Sheet1', 'A1:D4').number_format = format_string
+        result = Range('Sheet1', 'A1:D4').number_format
+        assert_equal(format_string, result)
+
+    def test_get_address(self):
+        res = Range((1,1),(3,3)).get_address()
+        assert_equal(res, '$A$1:$C$3')
+
+        res = Range((1,1),(3,3)).get_address(False)
+        assert_equal(res, '$A1:$C3')
+
+        res = Range((1,1),(3,3)).get_address(True, False)
+        assert_equal(res, 'A$1:C$3')
+
+        res = Range((1,1),(3,3)).get_address(False, False)
+        assert_equal(res, 'A1:C3')
+
+        res = Range((1,1),(3,3)).get_address(include_sheetname=True)
+        assert_equal(res, 'Sheet1!$A$1:$C$3')
+
+        res = Range('Sheet2', (1,1),(3,3)).get_address(include_sheetname=True)
+        assert_equal(res, 'Sheet2!$A$1:$C$3')
+
+        res = Range((1,1),(3,3)).get_address(external=True)
+        assert_equal(res, '[test_range_1.xlsx]Sheet1!$A$1:$C$3')
+
+    def test_hyperlink(self):
+        address = 'www.xlwings.org'
+        # Naked address
+        Range('A1').add_hyperlink(address)
+        assert_equal(Range('A1').value, address)
+        if sys.platform.startswith('darwin'):
+            assert_equal(Range('A1').hyperlink, 'http://' + address)
+        else:
+            assert_equal(Range('A1').hyperlink, 'http://' + address + '/')
+
+        # Address + FriendlyName
+        Range('A2').add_hyperlink(address, 'test_link')
+        assert_equal(Range('A2').value, 'test_link')
+        if sys.platform.startswith('darwin'):
+            assert_equal(Range('A2').hyperlink, 'http://' + address)
+        else:
+            assert_equal(Range('A2').hyperlink, 'http://' + address + '/')
+
+    def test_hyperlink_formula(self):
+        Range('B10').formula = '=HYPERLINK("http://xlwings.org", "xlwings")'
+        assert_equal(Range('B10').hyperlink, 'http://xlwings.org')
+
+    def test_color(self):
+        rgb = (30, 100, 200)
+
+        Range('A1').color = rgb
+        assert_equal(rgb, Range('A1').color)
+
+        Range('A2').color = RgbColor.rgbAqua
+        assert_equal((0, 255, 255), Range('A2').color)
+
+        Range('A2').color = None
+        assert_equal(Range('A2').color, None)
+
+        Range('A1:D4').color = rgb
+        assert_equal(rgb, Range('A1:D4').color)
+
+    def test_size(self):
+        assert_equal(Range('A1:C4').size, 12)
+
+    def test_shape(self):
+        assert_equal(Range('A1:C4').shape, (4, 3))
+
+    def test_len(self):
+        assert_equal(len(Range('A1:C4')), 4)
+
+    def test_iterator(self):
+        Range('A20').value = [[1., 2.], [3., 4.]]
+        l = []
+
+        for i in Range('A20:B21'):
+            l.append(i.value)
+
+        assert_equal(l, [1., 2., 3., 4.])
+
+        Range('Sheet2', 'A20').value = [[1., 2.], [3., 4.]]
+        l = []
+
+        for i in Range('Sheet2', 'A20:B21'):
+            l.append(i.value)
+
+        assert_equal(l, [1., 2., 3., 4.])
+
+    def test_resize(self):
+        r = Range('A1').resize(4, 5)
+        assert_equal(r.shape, (4, 5))
+
+        r = Range('A1').resize(row_size=4)
+        assert_equal(r.shape, (4, 1))
+
+        r = Range('A1:B4').resize(column_size=5)
+        assert_equal(r.shape, (1, 5))
+
+    def test_offset(self):
+        o = Range('A1:B3').offset(3, 4)
+        assert_equal(o.get_address(), '$E$4:$F$6')
+
+        o = Range('A1:B3').offset(row_offset=3)
+        assert_equal(o.get_address(), '$A$4:$B$6')
+
+        o = Range('A1:B3').offset(column_offset=4)
+        assert_equal(o.get_address(), '$E$1:$F$3')
+
+    def test_date(self):
+        date_1 = date(2000, 12, 3)
+        Range('X1').value = date_1
+        date_2 = Range('X1').value
+        assert_equal(date_1, date(date_2.year, date_2.month, date_2.day))
+
+    def test_row(self):
+        assert_equal(Range('B3:F5').row, 3)
+
+    def test_column(self):
+        assert_equal(Range('B3:F5').column, 2)
+
+    def test_last_cell(self):
+        assert_equal(Range('B3:F5').last_cell.row, 5)
+        assert_equal(Range('B3:F5').last_cell.column, 6)
+
+
+class TestChart:
+    def setUp(self):
+        # Connect to test file and make Sheet1 the active sheet
+        xl_file1 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test_chart_1.xlsx')
+        self.wb = Workbook(xl_file1, app_visible=False)
+        Sheet('Sheet1').activate()
+
+    def tearDown(self):
+        self.wb.close()
+
+    def test_add_keywords(self):
+        name = 'My Chart'
+        chart_type = ChartType.xlLine
+        Range('A1').value = chart_data
+        chart = Chart.add(chart_type=chart_type, name=name, source_data=Range('A1').table)
+
+        chart_actual = Chart(name)
+        name_actual = chart_actual.name
+        chart_type_actual = chart_actual.chart_type
+        assert_equal(name, name_actual)
+        if sys.platform.startswith('win'):
+            assert_equal(chart_type, chart_type_actual)
+        else:
+            assert_equal(kw.line_chart, chart_type_actual)
+
+    def test_add_properties(self):
+        name = 'My Chart'
+        chart_type = ChartType.xlLine
+        Range('Sheet2', 'A1').value = chart_data
+        chart = Chart.add('Sheet2')
+        chart.chart_type = chart_type
+        chart.name = name
+        chart.set_source_data(Range('Sheet2', 'A1').table)
+
+        chart_actual = Chart('Sheet2', name)
+        name_actual = chart_actual.name
+        chart_type_actual = chart_actual.chart_type
+        assert_equal(name, name_actual)
+        if sys.platform.startswith('win'):
+            assert_equal(chart_type, chart_type_actual)
+        else:
+            assert_equal(kw.line_chart, chart_type_actual)
+
+
+if __name__ == '__main__':
+    nose.main()

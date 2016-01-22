@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>Launcher - Anaconda - Continuum Analytics</title>
+        <link href="static/vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="static/vendor/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+        <link href="static/vendor/font-awesome/css/font-awesome.css" rel="stylesheet">
+        <link href="static/application.css" rel="stylesheet" type="text/css" charset="utf-8">
+
+        <script src="static/vendor/promise-4.0.0.js" type="text/javascript" charset="utf-8"></script>
+        <script src="static/vendor/jquery/1.9.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="static/vendor/underscore/underscore.js" type="text/javascript" charset="utf-8"></script>
+        <script src="static/vendor/backbone/backbone.js" type="text/javascript" charset="utf-8"></script>
+        <script src="static/vendor/bootstrap/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="static/shell-workaround.js" type="text/javascript" charset="utf-8"></script>
+        <script src="static/application.js" type="text/javascript" charset="utf-8"></script>
+        <script src="static/shell-workaround-2.js" type="text/javascript" charset="utf-8"></script>
+        <script src="static/shell-ui.js" type="text/javascript" charset="utf-8"></script>
+
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function(){
+                require('main')();
+            });
+        </script>
+
+        <script>
+         if (typeof window.localStorage['analytics'] !== "undefined" && window.localStorage['analytics'] === "true") {
+             console.log('Analytics is enabled');
+         }
+         else {
+             console.log('Analytics is disabled');
+             window['ga-disable-UA-27761864-8'] = true;
+         }
+         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+         })(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
+
+         ga('create', 'UA-27761864-8', 'auto');
+         ga('set', 'checkProtocolTask', function(){ return true; });
+         ga('set', 'anonymizeIp', true);
+         ga('send', 'pageview');
+        </script>
+    </head>
+    <body>
+        <header class="container-fluid">
+            <div class="navbar navbar-top">
+                <div class="navbar-inner">
+                    <div class="container">
+                    	<a class="brand" href="index.html"><img src="static/img/AppLauncher-icon-75x75.png" height="25" width="25"/> Launcher</a>
+                        <div class="pull-left" id="env-view">
+                          <ul class="nav">
+                            <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Environment: <span class="environment-name">root</span> <b class="caret"></b>
+                              </a>
+                              <ul class="dropdown-menu">
+                                <li class="env-info"><a href="#"><i class="icon-info-sign"></i> Info</a></li>
+                                <li class="env-new"><a href="#"><i class="icon-plus-sign"></i> New Environment</a></li>
+                                <li class="env-clone"><a href="#"><i class="icon-copy"></i> <span>Clone Environment</span></a></li>
+                                <li class="env-delete"><a href="#"><i class="icon-remove-sign"></i> <span>Delete Environment</span></a></li>
+                                <li class="divider"></li>
+                              </ul>
+                            </li>
+                            <li><a href="#" class="version"></a></li>
+                          </ul>
+                        </div>
+                        <div class="pull-right" id="launcher_info">
+                          <a href="#"><h6><span id="launcher_version"></span></h6></a>
+                        </div>
+                        <div class="pull-right" id="manage_channels">
+                          <ul class="nav">
+                            <li><a href="#" class="manage">Manage Channels</a></li>
+                          </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="container-fluid" id="main">
+            <div id="content" class="row-fluid">
+                <div class="span10">
+                    <div class="app-panel-content">
+                    	<div id="loadingDiv">
+		                   	<h3>Loading apps list...</h3>
+		                	<div class="progress progress-striped active">
+								<div class="bar" style="width: 100%;"></div>
+							</div>
+					    </div>
+                        <ul class="panel app-list unstyled" style="display: none;">
+                        </ul>
+                    </div>
+                    <div id="analytics-prompt" class="alert alert-info alert-block" style="display: none;">
+                      <h4>Send usage statistics?</h4>
+                      <p>No personal information will be sent. You can
+                        disable this at any time - click the version in the
+                        upper right.</p>
+                      <p><a href="#" class="more-info">More information</a></p>
+                      <br/>
+                      <div class="btn-group">
+                        <button class="btn btn-primary decline">No - Don't Ask Again</button>
+                        <button class="btn btn-success opt-in">Yes</button>
+                      </div>
+                    </div>
+                    <div id="analytics-thanks" class="alert alert-success" style="display: none;">
+                      <button type="button" class="close" data-dismiss="alert">&times;</button>
+                      <h4>Thank you!</h4>
+                    </div>
+                </div>
+
+                <div class="span2">
+                    <div class="full-height">
+                        <!--Sidebar content-->
+                        <div class="panel" id="sidebar">
+                            <!--<div class="panel-heading">
+
+                            </div>-->
+                            <ul class="unstyled">
+                            	<li>
+                                       <a href="https://wakari.io" target='_blank' class='sidelink'>
+                                		Wakari<br>
+                                		<img src="static/img/wakari_main.png"/>
+                                	</a>
+                                </li>
+                                <hr>
+                                <li>
+                                	<a href="https://wakari.io/gallery" target="_blank" class="sidelink">
+                                		Notebook Gallery<br>
+                                		<img src="static/img/gallery_screenshot.png"/>
+                                	</a>
+                                </li>
+                                <hr>
+                                <li>
+                                	<a href="http://continuum.io" target="_blank" class='sidelink'>
+                                		Continuum Analytics<br>
+                                		<img src="static/img/continuum_screenshot.png"/>
+                                	</a>
+                                </li>
+                                <hr>
+                                <li>
+                                	<a href="http://docs.continuum.io" target="_blank" class='sidelink'>
+                                		Documentation<br>
+                                		<img src="static/img/docs_screenshot.png"/>
+                                	</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- General purpose modal.  Set the modal-title and modal-body divs then show the modal.-->
+            <div id="general_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal">x</button>
+		        <h3 class="modal-title"></h3>
+		      </div>
+		      <div class="modal-body">
+		      </div>
+		      <div id="modalFooter" class="modal-footer">
+		        <a id="modalCancelBtn" href="#" class="btn" data-dismiss="modal">Close</a>
+		      </div>
+		    </div>
+
+            <!-- Prompt modal. -->
+            <div id="prompt_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	      <div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">x</button>
+		<h3 class="modal-title"></h3>
+	      </div>
+	      <div class="modal-body">
+	      </div>
+	      <div id="modalFooter" class="modal-footer">
+                <a id="modalCancelBtn" href="#" class="btn btn-inverse" data-dismiss="modal">Cancel</a>
+		<a href="#" class="btn btn-success submit">Submit</a>
+	      </div>
+	    </div>
+
+            <!-- Confirm modal. -->
+            <div id="confirm_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	      <div class="modal-header">
+		<h3 class="modal-title"></h3>
+	      </div>
+	      <div class="modal-body">
+	      </div>
+	      <div id="modalFooter" class="modal-footer">
+                <a id="modalCancelBtn" href="#" class="btn btn-inverse cancel" data-dismiss="modal">Cancel</a>
+		<a href="#" class="btn btn-danger submit">Yes</a>
+	      </div>
+	    </div>
+
+		    <!-- App launch modal.  Cannot use the general purpose modal because the launch
+		    	operation assigned a 'shown' event to the modal that cannot be reset -->
+		    <div id="launch_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal">x</button>
+		        <h3 class="modal-title">App Launch</h3>
+		      </div>
+		      <div class="modal-body">
+		      </div>
+		      <div id="modalFooter" class="modal-footer">
+		        <a id="modalCancelBtn" href="#" class="btn" data-dismiss="modal">Close</a>
+		      </div>
+		    </div>
+        </div>
+  </body>
+</html>

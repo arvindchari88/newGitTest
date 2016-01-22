@@ -1,0 +1,39 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/sphinx_rtd_theme-0.1.7-py2.7.egg-info/PKG-INFO", 
+    "Lib/site-packages/sphinx_rtd_theme-0.1.7-py2.7.egg-info/SOURCES.txt", 
+    "Lib/site-packages/sphinx_rtd_theme-0.1.7-py2.7.egg-info/dependency_links.txt", 
+    "Lib/site-packages/sphinx_rtd_theme-0.1.7-py2.7.egg-info/not-zip-safe", 
+    "Lib/site-packages/sphinx_rtd_theme-0.1.7-py2.7.egg-info/top_level.txt", 
+    "Lib/site-packages/sphinx_rtd_theme/__init__.py", 
+    "Lib/site-packages/sphinx_rtd_theme/__init__.pyc", 
+    "Lib/site-packages/sphinx_rtd_theme/breadcrumbs.html", 
+    "Lib/site-packages/sphinx_rtd_theme/footer.html", 
+    "Lib/site-packages/sphinx_rtd_theme/layout.html", 
+    "Lib/site-packages/sphinx_rtd_theme/layout_old.html", 
+    "Lib/site-packages/sphinx_rtd_theme/search.html", 
+    "Lib/site-packages/sphinx_rtd_theme/searchbox.html", 
+    "Lib/site-packages/sphinx_rtd_theme/static/css/badge_only.css", 
+    "Lib/site-packages/sphinx_rtd_theme/static/css/theme.css", 
+    "Lib/site-packages/sphinx_rtd_theme/static/fonts/fontawesome-webfont.eot", 
+    "Lib/site-packages/sphinx_rtd_theme/static/fonts/fontawesome-webfont.svg", 
+    "Lib/site-packages/sphinx_rtd_theme/static/fonts/fontawesome-webfont.ttf", 
+    "Lib/site-packages/sphinx_rtd_theme/static/fonts/fontawesome-webfont.woff", 
+    "Lib/site-packages/sphinx_rtd_theme/static/js/theme.js", 
+    "Lib/site-packages/sphinx_rtd_theme/theme.conf", 
+    "Lib/site-packages/sphinx_rtd_theme/versions.html"
+  ], 
+  "license": "BSD", 
+  "name": "sphinx_rtd_theme", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "0.1.7"
+}

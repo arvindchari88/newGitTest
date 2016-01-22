@@ -1,0 +1,22 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/unicodecsv-0.9.4-py2.7.egg-info", 
+    "Lib/site-packages/unicodecsv/__init__.py", 
+    "Lib/site-packages/unicodecsv/__init__.pyc", 
+    "Lib/site-packages/unicodecsv/test.py", 
+    "Lib/site-packages/unicodecsv/test.pyc"
+  ], 
+  "license": "BSD", 
+  "name": "unicodecsv", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "0.9.4"
+}

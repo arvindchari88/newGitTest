@@ -1,0 +1,4 @@
+<div class="input-append channel">
+  <input type="text" value="<%= @channel %>" disabled />
+  <button class="btn btn-danger remove">&times;</button>
+</div>

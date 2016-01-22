@@ -1,0 +1,51 @@
+<li class="app clearfix">
+  <div>
+    <img class="pull-left" src="<%= @icon_url %>" height="45" width="45"/>
+    <h3 class="inline">
+      &nbsp;
+      <span class="app-name"><%= @name %></span>
+      <button class="btn btn-primary btn-small pull-right launch-btn <%= @hideLaunch %>"
+              data-appid="<%= @appid %>" data-appname="<%= @name %>"
+              data-own-environment="<%= @app_own_environment %>"
+              data-environment="<%= @environment %>">
+        <i class="icon-rocket"></i>
+        Launch
+      </button>
+      <button class="btn btn-success btn-small pull-right install-btn <%= @hideInstall %>"
+              data-appid="<%= @appid %>" data-appname="<%= @name %>"
+              data-own-environment="<%= @app_own_environment %>"
+              data-environment="<%= @environment %>">
+        <i class="icon-download-alt"></i>
+        Install
+      </button>
+      <% if @hasUpdate: %>
+      <button class="btn btn-info btn-small pull-right update-btn"
+              data-appid="<%= @appid %>" data-appname="<%= @name %>"
+              data-own-environment="<%= @app_own_environment %>"
+              data-environment="<%= @environment %>">
+        <i class="icon-upload-alt"></i>
+        Update
+      </button>
+      <% end %>
+      <!--<br>
+          <i class="icon-info-sign appinfo btn-small pull-right" data-appid="<%= @appid %>"></i>
+          -->
+    </h3>
+  </div>
+  <p class="pull-left">
+    <%= @summary %>
+  </p>
+  <p class="pull-right muted <%= @hideLaunch %>">
+    <% if @app_own_environment: %>
+    <% if @installed and not @ownEnvironment: %>
+    Installed into "<%= @environment %>"
+    <% else: %>
+    Installed into own environment
+    <% end %>
+    <% end %>
+    <em>Version <%= @version %></em>
+  </p>
+  <p class="pull-right muted <%= @hideOwnEnvironment %> <%= @hideInstall %>">
+    Installs into own environment
+  </p>
+</li>

@@ -1,0 +1,20 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*", 
+    "setuptools", 
+    "wheel 0.24.0"
+  ], 
+  "license": "MIT", 
+  "name": "pip", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7", 
+    "setuptools 18.1", 
+    "wheel 0.24.0"
+  ], 
+  "subdir": "win-64", 
+  "version": "7.1.2"
+}

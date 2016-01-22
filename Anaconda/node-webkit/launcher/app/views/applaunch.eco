@@ -1,0 +1,2 @@
+<p>Launching <%= @name %></p>
+<p>Some apps take a moment to start.</p>

@@ -1,0 +1,35 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/alabaster-0.7.3-py2.7.egg-info/PKG-INFO", 
+    "Lib/site-packages/alabaster-0.7.3-py2.7.egg-info/SOURCES.txt", 
+    "Lib/site-packages/alabaster-0.7.3-py2.7.egg-info/dependency_links.txt", 
+    "Lib/site-packages/alabaster-0.7.3-py2.7.egg-info/not-zip-safe", 
+    "Lib/site-packages/alabaster-0.7.3-py2.7.egg-info/pbr.json", 
+    "Lib/site-packages/alabaster-0.7.3-py2.7.egg-info/top_level.txt", 
+    "Lib/site-packages/alabaster/__init__.py", 
+    "Lib/site-packages/alabaster/__init__.pyc", 
+    "Lib/site-packages/alabaster/_version.py", 
+    "Lib/site-packages/alabaster/_version.pyc", 
+    "Lib/site-packages/alabaster/about.html", 
+    "Lib/site-packages/alabaster/donate.html", 
+    "Lib/site-packages/alabaster/layout.html", 
+    "Lib/site-packages/alabaster/navigation.html", 
+    "Lib/site-packages/alabaster/static/alabaster.css_t", 
+    "Lib/site-packages/alabaster/support.py", 
+    "Lib/site-packages/alabaster/support.pyc", 
+    "Lib/site-packages/alabaster/theme.conf"
+  ], 
+  "license": "BSD", 
+  "name": "alabaster", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "0.7.3"
+}

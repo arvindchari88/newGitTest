@@ -1,0 +1,43 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/xlrd-0.9.3-py2.7.egg-info", 
+    "Lib/site-packages/xlrd/__init__.py", 
+    "Lib/site-packages/xlrd/__init__.pyc", 
+    "Lib/site-packages/xlrd/biffh.py", 
+    "Lib/site-packages/xlrd/biffh.pyc", 
+    "Lib/site-packages/xlrd/book.py", 
+    "Lib/site-packages/xlrd/book.pyc", 
+    "Lib/site-packages/xlrd/compdoc.py", 
+    "Lib/site-packages/xlrd/compdoc.pyc", 
+    "Lib/site-packages/xlrd/formatting.py", 
+    "Lib/site-packages/xlrd/formatting.pyc", 
+    "Lib/site-packages/xlrd/formula.py", 
+    "Lib/site-packages/xlrd/formula.pyc", 
+    "Lib/site-packages/xlrd/info.py", 
+    "Lib/site-packages/xlrd/info.pyc", 
+    "Lib/site-packages/xlrd/licences.py", 
+    "Lib/site-packages/xlrd/licences.pyc", 
+    "Lib/site-packages/xlrd/sheet.py", 
+    "Lib/site-packages/xlrd/sheet.pyc", 
+    "Lib/site-packages/xlrd/timemachine.py", 
+    "Lib/site-packages/xlrd/timemachine.pyc", 
+    "Lib/site-packages/xlrd/xldate.py", 
+    "Lib/site-packages/xlrd/xldate.pyc", 
+    "Lib/site-packages/xlrd/xlsx.py", 
+    "Lib/site-packages/xlrd/xlsx.pyc", 
+    "Scripts/runxlrd.py"
+  ], 
+  "license": "BSD", 
+  "name": "xlrd", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "0.9.3"
+}

@@ -1,0 +1,42 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*", 
+    "six"
+  ], 
+  "files": [
+    "Lib/site-packages/dateutil/__init__.py", 
+    "Lib/site-packages/dateutil/__init__.pyc", 
+    "Lib/site-packages/dateutil/easter.py", 
+    "Lib/site-packages/dateutil/easter.pyc", 
+    "Lib/site-packages/dateutil/parser.py", 
+    "Lib/site-packages/dateutil/parser.pyc", 
+    "Lib/site-packages/dateutil/relativedelta.py", 
+    "Lib/site-packages/dateutil/relativedelta.pyc", 
+    "Lib/site-packages/dateutil/rrule.py", 
+    "Lib/site-packages/dateutil/rrule.pyc", 
+    "Lib/site-packages/dateutil/tz.py", 
+    "Lib/site-packages/dateutil/tz.pyc", 
+    "Lib/site-packages/dateutil/tzwin.py", 
+    "Lib/site-packages/dateutil/tzwin.pyc", 
+    "Lib/site-packages/dateutil/zoneinfo/__init__.py", 
+    "Lib/site-packages/dateutil/zoneinfo/__init__.pyc", 
+    "Lib/site-packages/dateutil/zoneinfo/dateutil-zoneinfo.tar.gz", 
+    "Lib/site-packages/python_dateutil-2.4.2-py2.7.egg-info/PKG-INFO", 
+    "Lib/site-packages/python_dateutil-2.4.2-py2.7.egg-info/SOURCES.txt", 
+    "Lib/site-packages/python_dateutil-2.4.2-py2.7.egg-info/dependency_links.txt", 
+    "Lib/site-packages/python_dateutil-2.4.2-py2.7.egg-info/requires.txt", 
+    "Lib/site-packages/python_dateutil-2.4.2-py2.7.egg-info/top_level.txt", 
+    "Lib/site-packages/python_dateutil-2.4.2-py2.7.egg-info/zip-safe"
+  ], 
+  "license": "BSD", 
+  "name": "python-dateutil", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7", 
+    "six 1.9.0"
+  ], 
+  "version": "2.4.2"
+}

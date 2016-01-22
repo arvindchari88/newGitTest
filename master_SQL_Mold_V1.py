@@ -1,5 +1,5 @@
+#!C:\Users\arvind.chari\Documents\NewGitTest\Anaconda\python.exe -u
 #!/usr/bin/env python
-#!C:\Users\arvind.chari\AppData\Local\Continuum\Anaconda\python.exe -u
 
 #GTAT Grid Production Line Bokeh Plotting Software
 #Started By Kevin Zhai during Summer 2015 internship
@@ -22,7 +22,8 @@ from numpy import pi
 import pandas as pd
 import sys
 import datetime
-from bokeh.plotting import figure, output_file, show, gridplot, hplot
+from bokeh.plotting import figure, gridplot, hplot
+from bokeh.io import output_file, show
 from bokeh.models import Callback, ColumnDataSource, GlyphRenderer, Circle, HoverTool, Range1d, LinearAxis
 from bokeh.models.widgets import Panel, Tabs
 from bokeh.charts import Bar, Histogram
@@ -479,184 +480,29 @@ else:
 ######################################################################################
 #Cu1 Plot
 ######################################################################################
-cu1_s = ColumnDataSource(data=dict(x=cu1_id, y=cu1_weights))
-p1 = figure(plot_width=780, plot_height=550, tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", title="Cu Tool 1")
-
-#Enable the following two lines if you would like lines between the points on the graph
-#p1.line('x', 'y', source=cu1_s, line_width=2) #represents the lines between the points on the graph
-#p1.circle('x', 'y', source=cu1_s, fill_color='white', size=8) #represents the dots on the graph so that lines can be drawn between
-
-#Sample code for showing new runs
-#for every other run ID, turn the data from white to blue
-#for every grid ID shown if run ID is same as last run ID keep Color the same else change color
-
-cu1_glyph = Circle(x='x',y='y', size=6, fill_color='white')
-cu1_rend = GlyphRenderer(data_source=cu1_s, glyph=cu1_glyph)
-
-cu1_hover = HoverTool(
-        plot=p1,
-        renderers=[cu1_rend],
-        tooltips=[
-            ("GridId, Weight", "@x, @y"),
-        ]
-    )
-
-p1.tools.extend([cu1_hover])
-p1.renderers.extend([cu1_rend])
+p1 = graph_functions.create_histogram(cu1_stats['avg'], cu1_stats['std'], cu1_weights, 50, 1.2, 1.6)
 
 cu1_yield = round(float(len(cu1_accepted))/(float(len(cu1_accepted)) + float(len(t1_failure_pos))),2)
 
-cu1_avg = ColumnDataSource(data=dict(y=[cu1_stats['avg'], cu1_stats['avg']], cl=cl))
-cu1_lower = ColumnDataSource(data=dict(y=[cu1_stats['lcl'], cu1_stats['lcl']]))
-cu1_upper = ColumnDataSource(data=dict(y=[cu1_stats['ucl'], cu1_stats['ucl']]))
-p1.line(x=[max(cu1_id), min(cu1_id)], y='y', source=cu1_avg, line_width=2, line_color='red', line_dash=[4,4], legend='Mean = ' + str(round(cu1_stats['avg'], 3)))
-p1.line(x=[max(cu1_id), min(cu1_id)], y='y', source=cu1_lower, line_width=1, line_color='red', legend='2*Std (Std = ' + str(round(cu1_stats['std'], 3)) + ")")
-p1.line(x=[max(cu1_id), min(cu1_id)], y='y', source=cu1_upper, line_width=1, line_color='red', legend='Yield: ' + str(cu1_yield))
+p1.line(cu1_weight[0], 0, line_width=1, legend='Mean = ' + str(round(cu1_stats['avg'], 3))) #daily rejected
+p1.line(cu1_weight[0], 0, line_width=1, legend='2*Std (Std = ' + str(round(cu1_stats['std'], 3)) + ")") #daily accepted
+p1.line(cu1_weight[0], 0, line_width=1, legend='Yield: ' + str(cu1_yield)) #daily rejected
+p1.line(cu1_weight[0], 0, line_width=1, legend='Accepted: ' + str(len(cu1_accepted))) #daily accepted
+p1.line(cu1_weight[0], 0, line_width=1, legend='Rejected: ' + str(len(t1_failure_pos))) #daily rejected
 
-#javascript script to handle the selection interaction callback
-cu1_s.callback = Callback(args=dict(cu1_avg=cu1_avg, cu1_lower=cu1_lower, cu1_upper=cu1_upper), code="""
-        var inds = cb_obj.get('selected')['1d'].indices;
-        var d = cb_obj.get('data');
-        var items = [];
-
-        if (inds.length == 0) { return; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-        for (i = 0; i < inds.length; i++) {
-            items.push(d['y'][inds[i]]);
-        }
-
-        var ym = average(items);
-        var std = standardDeviation(items);
-
-        cu1_avg.get('data')['y'] = [ym, ym]
-        cu1_lower.get('data')['y'] = [ym - (cu1_avg.get('data')['cl'] * std), ym - (cu1_avg.get('data')['cl'] * std)]
-        cu1_upper.get('data')['y'] = [(cu1_avg.get('data')['cl'] * std) + ym, (cu1_avg.get('data')['cl'] * std) + ym]
-
-        cb_obj.trigger('change');
-        cu1_avg.trigger('change');
-        cu1_lower.trigger('change');
-        cu1_upper.trigger('change');
-    
-    	//define the functions needed for standard dev and average
-        function standardDeviation(values){
-  			var avg = average(values);
-  
-  			var squareDiffs = values.map(function(value){
-    			var diff = value - avg;
-    			var sqrDiff = diff * diff;
-    			return sqrDiff;
-  			});
-  
-  			var avgSquareDiff = average(squareDiffs);
-
-  			var stdDev = Math.sqrt(avgSquareDiff);
-  			return stdDev;
-		}
-
-		function average(data){
-  			var sum = data.reduce(function(sum, value){
-   			 	return sum + value;
- 			}, 0);
-
-  			var avg = sum / data.length;
-  			return avg;
-		}
-    """)
-
-p1.line(cu1_id, 1.6, line_width=1, legend='Accepted: ' + str(len(cu1_accepted))) #daily accepted
-p1.line(cu1_id, 1.2, line_width=1, legend='Rejected: ' + str(len(t1_failure_pos))) #daily rejected
-p1.line(cu1_id, 1.6, line_width=2, line_color='green')
-p1.line(cu1_id, 1.2, line_width=2, line_color='green')
-p1.background_fill = 'beige'
-p1.xaxis.axis_label = 'Grid Id'
-p1.yaxis.axis_label = 'Weights(g)'
 
 ######################################################################################
 #Cu2 Plot
 ######################################################################################
-cu2_s = ColumnDataSource(data=dict(x=cu2_idx, y=cu2_weights))
-p2 = figure(plot_width=780, plot_height=550, tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", title="Sn MG2")
-
-cu2_glyph = Circle(x='x',y='y', size=6, fill_color='white')
-cu2_rend = GlyphRenderer(data_source=cu2_s, glyph=cu2_glyph)
-
-cu2_hover = HoverTool(
-        plot=p2,
-        renderers=[cu2_rend],
-        tooltips=[
-            ("GridId, Weight", "@x, @y"),
-        ]
-    )
-
-p2.tools.extend([cu2_hover])
-p2.renderers.extend([cu2_rend])
+p2 = graph_functions.create_histogram(cu2_stats['avg'], cu2_stats['std'], cu2_weights, 50, .2, .55)
 
 cu2_yield = round(float(len(cu2_accepted))/(float(len(cu2_accepted)) + float(len(t2_failure_pos))),2)
 
-cu2_avg = ColumnDataSource(data=dict(y=[cu2_stats['avg'], cu2_stats['avg']], cl=cl))
-cu2_lower = ColumnDataSource(data=dict(y=[cu2_stats['lcl'], cu2_stats['lcl']]))
-cu2_upper = ColumnDataSource(data=dict(y=[cu2_stats['ucl'], cu2_stats['ucl']]))
-p2.line(x=[max(cu2_idx), min(cu2_idx)], y='y', source=cu2_avg, line_width=2, line_color='red', line_dash=[4,4], legend='Mean = ' + str(round(cu2_stats['avg'], 3)))
-p2.line(x=[max(cu2_idx), min(cu2_idx)], y='y', source=cu2_lower, line_width=1, line_color='red', legend='2*Std (Std = ' + str(round(cu2_stats['std'], 3)) + ")")
-p2.line(x=[max(cu2_idx), min(cu2_idx)], y='y', source=cu2_upper, line_width=1, line_color='red', legend='Yield: ' + str(cu2_yield))
-
-#javascript script to handle the selection interaction callback
-cu1_s.callback = Callback(args=dict(cu1_avg=cu2_avg, cu1_lower=cu2_lower, cu1_upper=cu2_upper), code="""
-        var inds = cb_obj.get('selected')['1d'].indices;
-        var d = cb_obj.get('data');
-        var items = [];
-
-        if (inds.length == 0) { return; }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-        for (i = 0; i < inds.length; i++) {
-            items.push(d['y'][inds[i]]);
-        }
-
-        var ym = average(items);
-        var std = standardDeviation(items);
-
-        cu1_avg.get('data')['y'] = [ym, ym]
-        cu1_lower.get('data')['y'] = [ym - (cu1_avg.get('data')['cl'] * std), ym - (cu1_avg.get('data')['cl'] * std)]
-        cu1_upper.get('data')['y'] = [(cu1_avg.get('data')['cl'] * std) + ym, (cu1_avg.get('data')['cl'] * std) + ym]
-
-        cb_obj.trigger('change');
-        cu1_avg.trigger('change');
-        cu1_lower.trigger('change');
-        cu1_upper.trigger('change');
-    
-      //define the functions needed for standard dev and average
-        function standardDeviation(values){
-        var avg = average(values);
-  
-        var squareDiffs = values.map(function(value){
-          var diff = value - avg;
-          var sqrDiff = diff * diff;
-          return sqrDiff;
-        });
-  
-        var avgSquareDiff = average(squareDiffs);
-
-        var stdDev = Math.sqrt(avgSquareDiff);
-        return stdDev;
-    }
-
-    function average(data){
-        var sum = data.reduce(function(sum, value){
-          return sum + value;
-      }, 0);
-
-        var avg = sum / data.length;
-        return avg;
-    }
-    """)
-
-p2.line(cu2_idx, .2, line_width=1, legend='Accepted: ' + str(len(cu2_accepted))) #daily accepted
-p2.line(cu2_idx, .5, line_width=1, legend='Rejected: ' + str(len(t2_failure_pos))) #daily rejected
-p2.line(cu2_idx, .2, line_width=2, line_color='green')
-p2.line(cu2_idx, .5, line_width=2, line_color='green')
-p2.background_fill = 'beige'
-p2.xaxis.axis_label = 'Grid Id'
-p2.yaxis.axis_label = 'Weights(g)'
+p2.line(cu2_weight[0], 0, line_width=1, legend='Mean = ' + str(round(cu2_stats['avg'], 3))) #daily rejected
+p2.line(cu2_weight[0], 0, line_width=1, legend='2*Std (Std = ' + str(round(cu2_stats['std'], 3)) + ")") #daily accepted
+p2.line(cu2_weight[0], 0, line_width=1, legend='Yield: ' + str(cu2_yield)) #daily rejected
+p2.line(cu2_weight[0], 0, line_width=1, legend='Accepted: ' + str(len(cu2_accepted))) #daily accepted
+p2.line(cu2_weight[0], 0, line_width=1, legend='Rejected: ' + str(len(t2_failure_pos))) #daily rejected
 
 #Meco GridThicknesses
 p4a = figure(plot_width=700, plot_height=400, title="Meco Thickness Comparison")
@@ -715,13 +561,13 @@ p_bt2_predip= graph_functions.titrations(predip, predip_tu, "Acid Predip (175-22
 #Copper Resistivity Measurements
 ##################################################################
 
-p_res = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Resistibity (uohm-cm)", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title="Resistivity")
+p_res = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Resistibity (uohm-cm)", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title="Resistivity")
 p_res.circle(res_x, res_y, fill_color="white", size=8)
 
 res_stats = statfunctions.stats(res_y, cl)
-res_avg = ColumnDataSource(data=dict(y=[res_stats['avg'], res_stats['avg']], cl=cl))
-res_lower = ColumnDataSource(data=dict(y=[res_stats['lcl'], res_stats['lcl']]))
-res_upper = ColumnDataSource(data=dict(y=[res_stats['ucl'], res_stats['ucl']]))
+#res_avg = ColumnDataSource(data=dict(y=[res_stats['avg'], res_stats['avg']], cl=cl))
+#res_lower = ColumnDataSource(data=dict(y=[res_stats['lcl'], res_stats['lcl']]))
+#res_upper = ColumnDataSource(data=dict(y=[res_stats['ucl'], res_stats['ucl']]))
 
 p_res.line(res_x, res_stats['avg'], line_width=2, line_color='red', line_dash=[4,4], legend='Mean = ' + str(round(res_stats['avg'], 3)))
 p_res.line(res_x, res_stats['avg']+2*res_stats['std'], line_width=1, line_color='red', legend='2*Std (Std = ' + str(round(res_stats['std'], 3)) + ")")
@@ -731,8 +577,8 @@ p_res.line(res_x, res_stats['avg']-2*res_stats['std'], line_width=1, line_color=
 #Tin Lead Thickness and Percentages
 ##################################################################
 
-p_sn_pct = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Sn Percentage", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title="Tin Percentage")
-p_sn_thickness = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Sn Thickness", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title="Tin Lead Thickness")
+p_sn_pct = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Sn Percentage", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title="Tin Percentage")
+p_sn_thickness = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Sn Thickness", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title="Tin Lead Thickness")
 
 p_sn_pct.circle(sn_pct_x, sn_pct_stats['avg'], fill_color="white", size=8)
 p_sn_thickness.circle(sn_thickness_x, sn_thickness_stats['avg'], fill_color="white", size=8)

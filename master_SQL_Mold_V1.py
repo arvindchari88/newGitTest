@@ -758,7 +758,7 @@ mandrel_uses = []
 mandrel_uses.append(Counter(mandrel_ids).keys())  
 mandrel_uses.append(Counter(mandrel_ids).values())
 mandrel_uses[1][:] = [x/4 for x in mandrel_uses[1]]
-mold_reuse = Histogram(mandrel_uses[1], width=500, height=500, bins=len(mandrel_uses[1]), xlabel = "Number of Uses", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", title="# of Uses vs Count", density=False)
+mold_reuse = Histogram(mandrel_uses[1], width=500, height=500, bins=3, xlabel = "Number of Uses", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", title="# of Uses vs Count", density=False)
 
 #create Panel layout
 tab1 = Panel(child=gridplot([[p1, p_t1_fail_pos[0]], [p4a, p_t1_fail_pos[1]]]), title="MECO Tool 1 Weights") #first tab of the dashboard

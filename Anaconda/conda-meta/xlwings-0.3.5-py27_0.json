@@ -1,0 +1,48 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*", 
+    "pytz", 
+    "pywin32"
+  ], 
+  "files": [
+    "Lib/site-packages/xlwings-0.3.5-py2.7.egg-info", 
+    "Lib/site-packages/xlwings/__init__.py", 
+    "Lib/site-packages/xlwings/__init__.pyc", 
+    "Lib/site-packages/xlwings/_xlmac.py", 
+    "Lib/site-packages/xlwings/_xlmac.pyc", 
+    "Lib/site-packages/xlwings/_xlwindows.py", 
+    "Lib/site-packages/xlwings/_xlwindows.pyc", 
+    "Lib/site-packages/xlwings/constants.py", 
+    "Lib/site-packages/xlwings/constants.pyc", 
+    "Lib/site-packages/xlwings/main.py", 
+    "Lib/site-packages/xlwings/main.pyc", 
+    "Lib/site-packages/xlwings/server.py", 
+    "Lib/site-packages/xlwings/server.pyc", 
+    "Lib/site-packages/xlwings/tests/__init__.py", 
+    "Lib/site-packages/xlwings/tests/__init__.pyc", 
+    "Lib/site-packages/xlwings/tests/test_chart_1.xlsx", 
+    "Lib/site-packages/xlwings/tests/test_range_1.xlsx", 
+    "Lib/site-packages/xlwings/tests/test_workbook_1.xlsx", 
+    "Lib/site-packages/xlwings/tests/test_xlwings.py", 
+    "Lib/site-packages/xlwings/tests/test_xlwings.pyc", 
+    "Lib/site-packages/xlwings/utils.py", 
+    "Lib/site-packages/xlwings/utils.pyc", 
+    "Lib/site-packages/xlwings/xlwings.bas", 
+    "Lib/site-packages/xlwings/xlwings_template.xltm", 
+    "xlwings32.dll", 
+    "xlwings64.dll"
+  ], 
+  "license": "3-clause BSD", 
+  "license_family": "BSD", 
+  "name": "xlwings", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7", 
+    "pytz 2015.2", 
+    "pywin32 219"
+  ], 
+  "version": "0.3.5"
+}

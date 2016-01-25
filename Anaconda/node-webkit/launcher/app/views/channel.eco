@@ -1,0 +1,20 @@
+<p>Enter a Binstar username or a URL. Conda will search these channels for
+packages. If the channel <tt>defaults</tt> is not present, Conda will not
+search the default channels.</p>
+
+<p><a class="external" href="http://conda.pydata.org/docs/config.html">Online configuration help</a></p>
+
+<div class="control-group">
+  <div class="input-append add-channel">
+    <input type="text" id="add-channel" />
+    <button class="btn btn-success" id="add">Add Channel</button>
+  </div>
+
+  <span class="help-inline" style="display: none;">Please enter a distinct, valid channel name.</span>
+</div>
+
+<div class="channel-list">
+  <% for channel in @channels: %>
+    <%- @template(channel: channel) %>
+  <% end %>
+</div>

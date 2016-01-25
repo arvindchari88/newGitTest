@@ -1,0 +1,15 @@
+<p>Help us prioritize features and improvements for development by
+permitting Anaconda Launcher to send us usage statistics, which contain
+aggregated information about button clicks and launcher features used, and
+crash reports, which help us fix crashes. No personal information is
+sent, and we anonymize your IP address as well.</p>
+
+<p>You can change whether usage statistics are sent to us at any
+time. Follow these steps:</p>
+
+<ol>
+  <li>Click the launcher version at the top right.
+    <img src="static/img/version.png" />
+  </li>
+  <li>Uncheck "Enable Analytics".</li>
+</ol>

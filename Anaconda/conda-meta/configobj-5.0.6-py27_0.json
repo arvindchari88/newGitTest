@@ -1,0 +1,26 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*", 
+    "six"
+  ], 
+  "files": [
+    "Lib/site-packages/_version.py", 
+    "Lib/site-packages/_version.pyc", 
+    "Lib/site-packages/configobj-5.0.6-py2.7.egg-info", 
+    "Lib/site-packages/configobj.py", 
+    "Lib/site-packages/configobj.pyc", 
+    "Lib/site-packages/validate.py", 
+    "Lib/site-packages/validate.pyc"
+  ], 
+  "license": "BSD", 
+  "name": "configobj", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7", 
+    "six 1.7.3"
+  ], 
+  "version": "5.0.6"
+}

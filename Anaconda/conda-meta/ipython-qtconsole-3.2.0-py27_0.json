@@ -1,0 +1,31 @@
+{
+  "app_entry": "ipython qtconsole", 
+  "app_type": "desk", 
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "ipython 3.2.0", 
+    "pygments", 
+    "pyqt", 
+    "python 2.7*", 
+    "pyzmq 14.*"
+  ], 
+  "files": [
+    "Menu/ipython-qtconsole.json"
+  ], 
+  "icon": "5e8fa0302270586eb7b2ecf71c1d1529.png", 
+  "license": "BSD", 
+  "name": "ipython-qtconsole", 
+  "platform": "win", 
+  "requires": [
+    "ipython 3.2.0", 
+    "pygments 2.0.2", 
+    "pyqt 4.10.4", 
+    "python 2.7", 
+    "pyzmq 14.7.0"
+  ], 
+  "summary": "IPython QtConsole", 
+  "type": "app", 
+  "version": "3.2.0"
+}

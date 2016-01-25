@@ -1,0 +1,31 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/fastcache-1.0.2-py2.7.egg-info", 
+    "Lib/site-packages/fastcache/__init__.py", 
+    "Lib/site-packages/fastcache/__init__.pyc", 
+    "Lib/site-packages/fastcache/_lrucache.pyd", 
+    "Lib/site-packages/fastcache/benchmark.py", 
+    "Lib/site-packages/fastcache/benchmark.pyc", 
+    "Lib/site-packages/fastcache/tests/__init__.py", 
+    "Lib/site-packages/fastcache/tests/__init__.pyc", 
+    "Lib/site-packages/fastcache/tests/test_clrucache.py", 
+    "Lib/site-packages/fastcache/tests/test_clrucache.pyc", 
+    "Lib/site-packages/fastcache/tests/test_functools.py", 
+    "Lib/site-packages/fastcache/tests/test_functools.pyc", 
+    "Lib/site-packages/fastcache/tests/test_thread.py", 
+    "Lib/site-packages/fastcache/tests/test_thread.pyc"
+  ], 
+  "license": "MIT", 
+  "name": "fastcache", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "1.0.2"
+}

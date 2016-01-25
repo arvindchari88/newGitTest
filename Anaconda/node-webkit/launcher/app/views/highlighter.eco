@@ -1,0 +1,15 @@
+<% if @category: %>
+<div class="item category muted">
+    <i class='<%= @icon or "icon-filter" %>'></i> <%= @category %>
+
+</div>
+<% else: %>
+<div class="item selectable" data-value="<%= @cat %>:<%= @name %>">
+    <% if @cat == 'app': %>
+    <i class="icon-flag icon-2x pull-left icon-border"></i>
+    <h5><%= @name %><br><small><%= @summary %></small></h5>
+    <% else: %>
+    <%= @name %>
+    <% end %>
+</div>
+<% end %>

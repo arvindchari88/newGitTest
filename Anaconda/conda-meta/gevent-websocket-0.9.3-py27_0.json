@@ -1,0 +1,50 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "gevent 1.0.1", 
+    "python 2.7*", 
+    "ujson 1.33"
+  ], 
+  "files": [
+    "Lib/site-packages/gevent_websocket-0.9.3-py2.7.egg-info", 
+    "Lib/site-packages/geventwebsocket/__init__.py", 
+    "Lib/site-packages/geventwebsocket/__init__.pyc", 
+    "Lib/site-packages/geventwebsocket/exceptions.py", 
+    "Lib/site-packages/geventwebsocket/exceptions.pyc", 
+    "Lib/site-packages/geventwebsocket/gunicorn/__init__.py", 
+    "Lib/site-packages/geventwebsocket/gunicorn/__init__.pyc", 
+    "Lib/site-packages/geventwebsocket/gunicorn/workers.py", 
+    "Lib/site-packages/geventwebsocket/gunicorn/workers.pyc", 
+    "Lib/site-packages/geventwebsocket/handler.py", 
+    "Lib/site-packages/geventwebsocket/handler.pyc", 
+    "Lib/site-packages/geventwebsocket/logging.py", 
+    "Lib/site-packages/geventwebsocket/logging.pyc", 
+    "Lib/site-packages/geventwebsocket/protocols/__init__.py", 
+    "Lib/site-packages/geventwebsocket/protocols/__init__.pyc", 
+    "Lib/site-packages/geventwebsocket/protocols/base.py", 
+    "Lib/site-packages/geventwebsocket/protocols/base.pyc", 
+    "Lib/site-packages/geventwebsocket/protocols/wamp.py", 
+    "Lib/site-packages/geventwebsocket/protocols/wamp.pyc", 
+    "Lib/site-packages/geventwebsocket/resource.py", 
+    "Lib/site-packages/geventwebsocket/resource.pyc", 
+    "Lib/site-packages/geventwebsocket/server.py", 
+    "Lib/site-packages/geventwebsocket/server.pyc", 
+    "Lib/site-packages/geventwebsocket/utf8validator.py", 
+    "Lib/site-packages/geventwebsocket/utf8validator.pyc", 
+    "Lib/site-packages/geventwebsocket/utils.py", 
+    "Lib/site-packages/geventwebsocket/utils.pyc", 
+    "Lib/site-packages/geventwebsocket/websocket.py", 
+    "Lib/site-packages/geventwebsocket/websocket.pyc"
+  ], 
+  "license": "Apache", 
+  "name": "gevent-websocket", 
+  "platform": "win", 
+  "requires": [
+    "gevent 1.0.1", 
+    "python 2.7", 
+    "ujson 1.33"
+  ], 
+  "version": "0.9.3"
+}

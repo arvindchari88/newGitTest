@@ -1,0 +1,30 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/ply-3.6-py2.7.egg-info", 
+    "Lib/site-packages/ply/__init__.py", 
+    "Lib/site-packages/ply/__init__.pyc", 
+    "Lib/site-packages/ply/cpp.py", 
+    "Lib/site-packages/ply/cpp.pyc", 
+    "Lib/site-packages/ply/ctokens.py", 
+    "Lib/site-packages/ply/ctokens.pyc", 
+    "Lib/site-packages/ply/lex.py", 
+    "Lib/site-packages/ply/lex.pyc", 
+    "Lib/site-packages/ply/yacc.py", 
+    "Lib/site-packages/ply/yacc.pyc", 
+    "Lib/site-packages/ply/ygen.py", 
+    "Lib/site-packages/ply/ygen.pyc"
+  ], 
+  "license": "BSD", 
+  "name": "ply", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "3.6"
+}

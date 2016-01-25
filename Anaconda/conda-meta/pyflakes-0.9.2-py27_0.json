@@ -1,0 +1,53 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/pyflakes-0.9.2-py2.7.egg-info", 
+    "Lib/site-packages/pyflakes/__init__.py", 
+    "Lib/site-packages/pyflakes/__init__.pyc", 
+    "Lib/site-packages/pyflakes/__main__.py", 
+    "Lib/site-packages/pyflakes/__main__.pyc", 
+    "Lib/site-packages/pyflakes/api.py", 
+    "Lib/site-packages/pyflakes/api.pyc", 
+    "Lib/site-packages/pyflakes/checker.py", 
+    "Lib/site-packages/pyflakes/checker.pyc", 
+    "Lib/site-packages/pyflakes/messages.py", 
+    "Lib/site-packages/pyflakes/messages.pyc", 
+    "Lib/site-packages/pyflakes/reporter.py", 
+    "Lib/site-packages/pyflakes/reporter.pyc", 
+    "Lib/site-packages/pyflakes/scripts/__init__.py", 
+    "Lib/site-packages/pyflakes/scripts/__init__.pyc", 
+    "Lib/site-packages/pyflakes/scripts/pyflakes.py", 
+    "Lib/site-packages/pyflakes/scripts/pyflakes.pyc", 
+    "Lib/site-packages/pyflakes/test/__init__.py", 
+    "Lib/site-packages/pyflakes/test/__init__.pyc", 
+    "Lib/site-packages/pyflakes/test/harness.py", 
+    "Lib/site-packages/pyflakes/test/harness.pyc", 
+    "Lib/site-packages/pyflakes/test/test_api.py", 
+    "Lib/site-packages/pyflakes/test/test_api.pyc", 
+    "Lib/site-packages/pyflakes/test/test_doctests.py", 
+    "Lib/site-packages/pyflakes/test/test_doctests.pyc", 
+    "Lib/site-packages/pyflakes/test/test_imports.py", 
+    "Lib/site-packages/pyflakes/test/test_imports.pyc", 
+    "Lib/site-packages/pyflakes/test/test_other.py", 
+    "Lib/site-packages/pyflakes/test/test_other.pyc", 
+    "Lib/site-packages/pyflakes/test/test_return_with_arguments_inside_generator.py", 
+    "Lib/site-packages/pyflakes/test/test_return_with_arguments_inside_generator.pyc", 
+    "Lib/site-packages/pyflakes/test/test_undefined_names.py", 
+    "Lib/site-packages/pyflakes/test/test_undefined_names.pyc", 
+    "Scripts/pyflakes", 
+    "Scripts/pyflakes-script.py", 
+    "Scripts/pyflakes.exe"
+  ], 
+  "license": "MIT", 
+  "name": "pyflakes", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "0.9.2"
+}

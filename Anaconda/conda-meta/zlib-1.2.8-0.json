@@ -1,0 +1,21 @@
+{
+  "arch": "x86_64", 
+  "build": "0", 
+  "build_number": 0, 
+  "depends": [], 
+  "files": [
+    "Library/bin/zlib.dll", 
+    "Library/include/zconf.h", 
+    "Library/include/zlib.h", 
+    "Library/lib/z.lib", 
+    "Library/lib/zlib.lib", 
+    "Library/lib/zlibstatic.lib", 
+    "Library/share/man/man3/zlib.3", 
+    "Library/share/pkgconfig/zlib.pc"
+  ], 
+  "license": "zlib (http://zlib.net/zlib_license.html)", 
+  "name": "zlib", 
+  "platform": "win", 
+  "requires": [], 
+  "version": "1.2.8"
+}

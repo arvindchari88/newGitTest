@@ -1,0 +1,37 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/_psutil_windows.pyd", 
+    "Lib/site-packages/psutil-2.2.1-py2.7.egg-info", 
+    "Lib/site-packages/psutil/__init__.py", 
+    "Lib/site-packages/psutil/__init__.pyc", 
+    "Lib/site-packages/psutil/_common.py", 
+    "Lib/site-packages/psutil/_common.pyc", 
+    "Lib/site-packages/psutil/_compat.py", 
+    "Lib/site-packages/psutil/_compat.pyc", 
+    "Lib/site-packages/psutil/_psbsd.py", 
+    "Lib/site-packages/psutil/_psbsd.pyc", 
+    "Lib/site-packages/psutil/_pslinux.py", 
+    "Lib/site-packages/psutil/_pslinux.pyc", 
+    "Lib/site-packages/psutil/_psosx.py", 
+    "Lib/site-packages/psutil/_psosx.pyc", 
+    "Lib/site-packages/psutil/_psposix.py", 
+    "Lib/site-packages/psutil/_psposix.pyc", 
+    "Lib/site-packages/psutil/_pssunos.py", 
+    "Lib/site-packages/psutil/_pssunos.pyc", 
+    "Lib/site-packages/psutil/_pswindows.py", 
+    "Lib/site-packages/psutil/_pswindows.pyc"
+  ], 
+  "license": "BSD", 
+  "name": "psutil", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "2.2.1"
+}

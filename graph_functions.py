@@ -1,19 +1,20 @@
+#!C:\Users\arvind.chari\Documents\NewGitTest\Anaconda\python.exe -u
 #!/usr/bin/env python
 
 import statfunctions
 from numpy import pi
-import pandas as pd
+import numpy as np
 import sys
 import datetime
 from bokeh.plotting import figure, output_file, show, gridplot, hplot
-from bokeh.models import Callback, ColumnDataSource, GlyphRenderer, Circle, HoverTool, Range1d, LinearAxis
+from bokeh.models import GlyphRenderer, Circle, HoverTool, Range1d, LinearAxis
 from bokeh.models.widgets import Panel, Tabs
 from bokeh.charts import Bar
-import sqlalchemy as sa
-import pyodbc
 from collections import Counter
 from random import randint
-import calendar
+
+import scipy.special
+
 
 ############################################################
 #Graph Grid Failures and Reasons for Failure by Position
@@ -55,7 +56,7 @@ def yield_by_day(daily_accepted, failure_pos) :
   if len(list_reject_by_day) == 0:
     list_reject_by_day.append(reject_by_day)
 
-  yield_plot = figure(plot_width=500, plot_height=500, x_axis_label = "Days into Set", y_axis_label="Yield", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title="Yield by Day")
+  yield_plot = figure(plot_width=500, plot_height=500, x_axis_label = "Days into Set", y_axis_label="Yield", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title="Yield by Day")
   temp_yields = []
   temp_dates = []
   temp_colors = choose_colors(list_reject_by_day)[0]
@@ -131,7 +132,7 @@ def create_legend(x_pos, y_pos, color_dict, figure, all_failures, num_fails_to_l
   for legend,color in color_dict.iteritems() :
     figure.circle(x=x_pos, y=y_pos, radius=0, color=color, legend=legend)
  
-  figure.legend.orientation = "bottom_left"
+  figure.legend.location = "bottom_left"
 
 
 #Take a list of failure positions and failure reasons and orgainize them by where they are on the grid, and how frequently they occured
@@ -330,7 +331,7 @@ def failure_pareto(cu1_accepted, t1_failure_pos) :
 
 
 def titrations(tit_meas, tit_tu, name, tit_color, y2_name) :
-  tit_plot = figure(plot_width=500, plot_height=350, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Concentration (g/L)", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title=name)
+  tit_plot = figure(plot_width=500, plot_height=350, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Concentration (g/L)", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title=name)
 
   #concentration, date, tool
   tit_x = []
@@ -355,3 +356,39 @@ def titrations(tit_meas, tit_tu, name, tit_color, y2_name) :
   tit_plot.circle(tit_tu_x,tit_tu_y, fill_color="white", size=8, y_range_name=y2_name, legend="Top Up Amount")
 
   return tit_plot
+
+
+
+def create_histogram (mu, sigma, weights, bin_size, low_spec, high_spec, cu1_accepted, t1_failure_pos):
+  p1 = figure(title="Normal Distribution",tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color="#E8DDCB")
+
+  measured = np.random.normal(mu, sigma, 1000)
+  hist, edges = np.histogram(weights, density=True, bins=bin_size)
+
+  x = np.linspace(np.amin(weights), np.amax(weights), 1000)
+  pdf = 1/(sigma * np.sqrt(2*np.pi)) * np.exp(-(x-mu)**2 / (2*sigma**2))
+  cdf = (1+scipy.special.erf((x-mu)/np.sqrt(2*sigma**2)))/2
+
+  p1.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
+       fill_color="#036564", line_color="#033649",\
+  )
+
+  sort_weights = sorted(weights)
+
+  cu1_yield = round(float(len(cu1_accepted))/(float(len(cu1_accepted)) + float(len(t1_failure_pos))),2)
+
+  p1.line(x, pdf, line_color="#D95B43", line_width=8, alpha=0.7, legend="PDF")
+  p1.line(low_spec, y=[0, np.amax(hist)], line_dash=[4, 4], line_color="orange", line_width=3, alpha=.5)
+  p1.line(high_spec, y=[0, np.amax(hist)], line_dash=[4, 4], line_color="orange", line_width=3, alpha=.5)
+  p1.line(weights[0], 0, line_width=1, legend='Mean = ' + str(round(mu, 3))) #daily rejected
+  p1.line(weights[0], 0, line_width=1, legend='2*Std (Std = ' + str(round(sigma, 3)) + ")") #daily accepted
+  p1.line(weights[0], 0, line_width=1, legend='Yield: ' + str(cu1_yield)) #daily rejected
+  p1.line(weights[0], 0, line_width=1, legend='Accepted: ' + str(len(cu1_accepted))) #daily accepted
+  p1.line(weights[0], 0, line_width=1, legend='Rejected: ' + str(len(t1_failure_pos))) #daily rejected
+
+  p1.xaxis.bounds = (np.amin(weights), np.amax(weights))
+
+  p1.legend.location = "top_left"
+  p1.xaxis.axis_label = 'Weight (g)'
+  p1.yaxis.axis_label = 'Pr(x)'
+  return p1

@@ -1,0 +1,101 @@
+body {
+  background-color: #EFEFEF;
+}
+html,
+body,
+.full-height {
+  height: 100%;
+  min-height: 100%;
+  max-height: 100%;
+}
+.app-panel-content {
+  border: 1px solid #EEE;
+}
+.preserve-whitespace {
+  white-space: pre;
+}
+.app-list {
+  box-shadow: 5px 5px 5px #EEE;
+  border-left: 1px solid #CCC;
+  border-right: 1px solid #CCC;
+  background: #FCFCFC;
+  margin-bottom: 0 !important;
+}
+.app-list li.app {
+  border-bottom: 1px solid #DDD;
+  padding: 10px;
+  position: relative;
+}
+.app-list li.app img {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.app-list li.app h3 span.app-name {
+  margin-left: 45px;
+}
+.app-list li.app h3 button {
+  min-width: 75px;
+  margin-top: 10px;
+}
+.app-list li.app:first-child {
+  padding-top: 0;
+}
+.app-list li.app:last-child {
+  border: 0;
+  padding-bottom: 0;
+}
+.app-list li.app p {
+  margin-left: 61px;
+  /* 45px image + 16px (=1em) for the &nbsp; */
+
+}
+header {
+  padding: 0 20px;
+  background-color: #EFEFEF;
+}
+header.affix {
+  box-sizing: border-box;
+  width: 100%;
+}
+header .navbar .brand {
+  padding: 0 10px !important;
+  height: 40px;
+  line-height: 40px;
+}
+header .navbar .no-environment a:hover {
+  background: linear-gradient(to bottom, #ffffff, #f2f2f2);
+  color: #000;
+  cursor: not-allowed;
+}
+header .navbar .environment.active a:before {
+  content: "\f14a";
+  /* icon-check-sign */
+
+  font-family: FontAwesome;
+  display: inline-block;
+  margin-right: 0.5em;
+}
+.panel {
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #FCFCFC;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+.channel,
+.add-channel {
+  display: block;
+}
+.channel input,
+.add-channel input {
+  width: 28em;
+}
+.channel-list {
+  max-height: 200px;
+  overflow-y: auto;
+}

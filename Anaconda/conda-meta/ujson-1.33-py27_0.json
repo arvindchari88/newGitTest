@@ -1,0 +1,19 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/ujson-1.33-py2.7.egg-info", 
+    "Lib/site-packages/ujson.pyd"
+  ], 
+  "license": "BSD", 
+  "name": "ujson", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "1.33"
+}

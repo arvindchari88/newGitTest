@@ -1,0 +1,3 @@
+[console_scripts]
+binstar = binstar_client.scripts.cli:main
+

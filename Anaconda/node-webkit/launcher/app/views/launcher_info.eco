@@ -1,0 +1,21 @@
+<p><b>Version:</b> <%= @version %> (node-webkit <%= @shell_version %>)</p>
+
+<hr />
+
+<p><b>Conda Version:</b> <%= @conda_version %></p>
+<p><b>Root Prefix:</b> <%= @conda.root_prefix %></p>
+<p><b>Default Prefix:</b> <%= @conda.default_prefix %></p>
+
+<hr />
+
+<p><b>Python Version:</b> <%= @conda.python_version %></p>
+<p><b>Platform:</b> <%= @conda.platform %></p>
+
+<hr />
+
+<p><input id="analytics" type="checkbox" style="vertical-align: top;" <% if @analytics: %> checked <% end %> /> Enable Analytics <a class="muted more-info" href="#">(More Info)</a></span></p>
+
+<p class="muted">No personal information is collected. We use this data to improve user
+experience.</p>
+
+<p>Copyright &copy; Continuum Analytics</p>

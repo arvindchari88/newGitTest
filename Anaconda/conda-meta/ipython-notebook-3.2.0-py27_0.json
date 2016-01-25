@@ -1,0 +1,45 @@
+{
+  "app_cli_opts": [
+    {
+      "args": "--port %s", 
+      "default": 8080, 
+      "name": "port", 
+      "summary": "Server port ..."
+    }
+  ], 
+  "app_entry": "ipython notebook", 
+  "app_type": "web", 
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "ipython 3.2.0", 
+    "jinja2", 
+    "jsonschema 2.4.0", 
+    "mistune", 
+    "pygments", 
+    "python 2.7*", 
+    "pyzmq 14.*", 
+    "tornado"
+  ], 
+  "files": [
+    "Menu/ipython-notebook.json"
+  ], 
+  "icon": "58c9e8a4a41c41dc796ffe680c1e02b5.png", 
+  "license": "BSD", 
+  "name": "ipython-notebook", 
+  "platform": "win", 
+  "requires": [
+    "ipython 3.2.0", 
+    "jinja2 2.7.3", 
+    "jsonschema 2.4.0", 
+    "mistune 0.6", 
+    "pygments 2.0.2", 
+    "python 2.7", 
+    "pyzmq 14.7.0", 
+    "tornado 4.2"
+  ], 
+  "summary": "IPython Notebook", 
+  "type": "app", 
+  "version": "3.2.0"
+}

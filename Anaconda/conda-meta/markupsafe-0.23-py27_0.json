@@ -1,0 +1,30 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/MarkupSafe-0.23-py2.7-win-amd64.egg-info", 
+    "Lib/site-packages/markupsafe/__init__.py", 
+    "Lib/site-packages/markupsafe/__init__.pyc", 
+    "Lib/site-packages/markupsafe/_compat.py", 
+    "Lib/site-packages/markupsafe/_compat.pyc", 
+    "Lib/site-packages/markupsafe/_constants.py", 
+    "Lib/site-packages/markupsafe/_constants.pyc", 
+    "Lib/site-packages/markupsafe/_native.py", 
+    "Lib/site-packages/markupsafe/_native.pyc", 
+    "Lib/site-packages/markupsafe/_speedups.c", 
+    "Lib/site-packages/markupsafe/_speedups.pyd", 
+    "Lib/site-packages/markupsafe/tests.py", 
+    "Lib/site-packages/markupsafe/tests.pyc"
+  ], 
+  "license": "BSD", 
+  "name": "markupsafe", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "0.23"
+}

@@ -1,0 +1,33 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "ipython-notebook", 
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/runipy-0.1.3-py2.7.egg-info/PKG-INFO", 
+    "Lib/site-packages/runipy-0.1.3-py2.7.egg-info/SOURCES.txt", 
+    "Lib/site-packages/runipy-0.1.3-py2.7.egg-info/dependency_links.txt", 
+    "Lib/site-packages/runipy-0.1.3-py2.7.egg-info/entry_points.txt", 
+    "Lib/site-packages/runipy-0.1.3-py2.7.egg-info/requires.txt", 
+    "Lib/site-packages/runipy-0.1.3-py2.7.egg-info/top_level.txt", 
+    "Lib/site-packages/runipy/__init__.py", 
+    "Lib/site-packages/runipy/__init__.pyc", 
+    "Lib/site-packages/runipy/main.py", 
+    "Lib/site-packages/runipy/main.pyc", 
+    "Lib/site-packages/runipy/notebook_runner.py", 
+    "Lib/site-packages/runipy/notebook_runner.pyc", 
+    "Scripts/runipy-script.py", 
+    "Scripts/runipy.exe"
+  ], 
+  "license": "BSD", 
+  "name": "runipy", 
+  "platform": "win", 
+  "requires": [
+    "ipython-notebook 3.0.0", 
+    "python 2.7"
+  ], 
+  "version": "0.1.3"
+}

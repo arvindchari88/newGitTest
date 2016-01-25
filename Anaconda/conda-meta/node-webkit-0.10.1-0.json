@@ -1,0 +1,24 @@
+{
+  "arch": "x86_64", 
+  "build": "0", 
+  "build_number": 0, 
+  "depends": [], 
+  "files": [
+    "Scripts/node-webkit.bat", 
+    "node-webkit/ANACONDA_DIST.txt", 
+    "node-webkit/bld.bat", 
+    "node-webkit/credits.html", 
+    "node-webkit/ffmpegsumo.dll", 
+    "node-webkit/icudtl.dat", 
+    "node-webkit/libEGL.dll", 
+    "node-webkit/libGLESv2.dll", 
+    "node-webkit/nw.exe", 
+    "node-webkit/nw.pak", 
+    "node-webkit/nwsnapshot.exe"
+  ], 
+  "license": "MIT", 
+  "name": "node-webkit", 
+  "platform": "win", 
+  "requires": [], 
+  "version": "0.10.1"
+}

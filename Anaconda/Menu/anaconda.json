@@ -1,0 +1,10 @@
+{
+  "menu_items": [
+    {
+      "icon": "${MENU_DIR}/continuum.ico", 
+      "name": "Wakari (in the cloud)", 
+      "webbrowser": "https://www.wakari.io/"
+    }
+  ], 
+  "menu_name": "Anaconda (64-bit)"
+}

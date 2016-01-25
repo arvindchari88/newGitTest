@@ -1,0 +1,15 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_1", 
+  "build_number": 1, 
+  "files": [
+    "Lib/site-packages/cdecimal-2.3-py2.7.egg-info", 
+    "Lib/site-packages/cdecimal.pyd"
+  ], 
+  "name": "cdecimal", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "2.3"
+}

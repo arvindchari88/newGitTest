@@ -1,0 +1,38 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/clyent-0.3.4-py2.7.egg-info", 
+    "Lib/site-packages/clyent/__init__.py", 
+    "Lib/site-packages/clyent/__init__.pyc", 
+    "Lib/site-packages/clyent/errors.py", 
+    "Lib/site-packages/clyent/errors.pyc", 
+    "Lib/site-packages/clyent/logs/__init__.py", 
+    "Lib/site-packages/clyent/logs/__init__.pyc", 
+    "Lib/site-packages/clyent/logs/colors/__init__.py", 
+    "Lib/site-packages/clyent/logs/colors/__init__.pyc", 
+    "Lib/site-packages/clyent/logs/colors/base.py", 
+    "Lib/site-packages/clyent/logs/colors/base.pyc", 
+    "Lib/site-packages/clyent/logs/colors/nt.py", 
+    "Lib/site-packages/clyent/logs/colors/nt.pyc", 
+    "Lib/site-packages/clyent/logs/colors/posix.py", 
+    "Lib/site-packages/clyent/logs/colors/posix.pyc", 
+    "Lib/site-packages/clyent/logs/colors/printer.py", 
+    "Lib/site-packages/clyent/logs/colors/printer.pyc", 
+    "Lib/site-packages/clyent/logs/formatters.py", 
+    "Lib/site-packages/clyent/logs/formatters.pyc", 
+    "Lib/site-packages/clyent/logs/handlers.py", 
+    "Lib/site-packages/clyent/logs/handlers.pyc"
+  ], 
+  "license": "BSD", 
+  "name": "clyent", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "0.3.4"
+}

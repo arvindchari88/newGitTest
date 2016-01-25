@@ -1,0 +1,28 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_0", 
+  "build_number": 0, 
+  "depends": [
+    "python 2.7*"
+  ], 
+  "files": [
+    "Lib/site-packages/funcsigs-0.4-py2.7.egg-info/PKG-INFO", 
+    "Lib/site-packages/funcsigs-0.4-py2.7.egg-info/SOURCES.txt", 
+    "Lib/site-packages/funcsigs-0.4-py2.7.egg-info/dependency_links.txt", 
+    "Lib/site-packages/funcsigs-0.4-py2.7.egg-info/not-zip-safe", 
+    "Lib/site-packages/funcsigs-0.4-py2.7.egg-info/top_level.txt", 
+    "Lib/site-packages/funcsigs/__init__.py", 
+    "Lib/site-packages/funcsigs/__init__.pyc", 
+    "Lib/site-packages/funcsigs/odict.py", 
+    "Lib/site-packages/funcsigs/odict.pyc", 
+    "Lib/site-packages/funcsigs/version.py", 
+    "Lib/site-packages/funcsigs/version.pyc"
+  ], 
+  "license": "Apache", 
+  "name": "funcsigs", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "0.4"
+}

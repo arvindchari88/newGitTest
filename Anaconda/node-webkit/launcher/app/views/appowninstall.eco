@@ -1,0 +1,1 @@
+<p>Installing app <%= @name %> into a separate environment</p>

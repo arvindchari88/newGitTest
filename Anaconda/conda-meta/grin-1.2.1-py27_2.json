@@ -1,0 +1,20 @@
+{
+  "arch": "x86_64", 
+  "build": "py27_2", 
+  "build_number": 2, 
+  "files": [
+    "Lib/site-packages/grin-1.2.1-py2.7.egg-info", 
+    "Lib/site-packages/grin.py", 
+    "Lib/site-packages/grin.pyc", 
+    "Scripts/grin-script.py", 
+    "Scripts/grin.bat", 
+    "Scripts/grind-script.py", 
+    "Scripts/grind.bat"
+  ], 
+  "name": "grin", 
+  "platform": "win", 
+  "requires": [
+    "python 2.7"
+  ], 
+  "version": "1.2.1"
+}

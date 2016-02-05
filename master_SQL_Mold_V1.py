@@ -469,43 +469,7 @@ p2 = graph_functions.create_histogram(cu2_stats['avg'], cu2_stats['std'], cu2_we
 ######################################################################################
 #Meco GridThicknesses
 ######################################################################################
-c_thickness_stats = statfunctions.liststats(meco_c_thickness, cl)
-l_thickness_stats = statfunctions.liststats(meco_l_thickness, cl)
-r_thickness_stats = statfunctions.liststats(meco_r_thickness, cl)
-
-p4a = figure(plot_width=700, plot_height=400, title="Meco Thickness Comparison")
-c_measurements = [1,2,3,4,5,6,7,8]
-l_measurements = [1,5,8]
-r_measurements = [1,5,8]
-#Center thickness
-p4a.line(c_measurements, c_thickness_stats['avg'], line_width=2, legend='Center')
-p4a.circle(c_measurements, c_thickness_stats['avg'], fill_color='white', size=8)
-#Left thickness
-p4a.line(l_measurements, l_thickness_stats['avg'], line_width=2, legend='Left', color='orange')
-p4a.circle(l_measurements, l_thickness_stats['avg'], fill_color='white', size=8)
-#Right thickness
-p4a.line(r_measurements, r_thickness_stats['avg'], line_width=2, legend='Right', color='purple')
-p4a.circle(r_measurements, r_thickness_stats['avg'], fill_color='white', size=8)
-#Total number of measured grids
-p4a.line(c_measurements, c_thickness_stats['avg'], line_width=2, legend='Total Measured: ' + str(cu1_measured), color='green')
-#Sampling Percentage
-p4a.line(c_measurements, c_thickness_stats['avg'], line_width=2, legend='Total Accepted: ' + str(len(cu1_accepted)), color='green')
-
-p4a.xaxis.axis_label = 'Measurement Number'
-p4a.yaxis.axis_label = 'Thickness (mm)'
-
-#Normalize Center Thicknesses
-normalized_thickness = statfunctions.normalize(meco_c_thickness)
-n_thickness_stats = statfunctions.liststats(normalized_thickness, cl)
-
-p4b = figure(plot_width=700, plot_height=400, title="Center Thickness Control (Normalized)")
-p4b.line(c_measurements, n_thickness_stats['avg'], line_width=2, legend='Center')
-p4b.circle(c_measurements, n_thickness_stats['avg'], fill_color='white', size=8)
-#STD lines
-p4b.line(c_measurements, n_thickness_stats['ucl'], line_width=1, line_color='red', legend='2 Std Lines')
-p4b.line(c_measurements, n_thickness_stats['lcl'], line_width=1, line_color='red')
-p4b.xaxis.axis_label = 'Measurement Number'
-p4b.yaxis.axis_label = 'Thickness (mm)'
+p3 = graph_functions.thickness_uniformity(statfunctions.liststats(meco_c_thickness, cl)['avg'], statfunctions.liststats(meco_l_thickness, cl)['avg'], statfunctions.liststats(meco_r_thickness, cl)['avg'], cu1_measured, cu1_accepted, meco_c_thickness, cl)[0]
 
 #FOR ALL OF THE FOLLOWING GRAPHS, functions were created in graph_functions.py to avoid writing the code multiple times 
 ##################################################################
@@ -572,7 +536,7 @@ mandrel_uses[1][:] = [x/4 for x in mandrel_uses[1]]
 mold_reuse = Histogram(mandrel_uses[1], width=500, height=500, bins=len(mandrel_uses[1]), xlabel = "Number of Uses", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", title="# of Uses vs Count", density=False)
 
 #create Panel layout
-tab1 = Panel(child=gridplot([[p1, p_t1_fail_pos[0]], [p4a, p_t1_fail_pos[1]]]), title="MECO Tool 1 Weights") #first tab of the dashboard
+tab1 = Panel(child=gridplot([[p1, p_t1_fail_pos[0]], [p3, p_t1_fail_pos[1]]]), title="MECO Tool 1 Weights") #first tab of the dashboard
 tab2 = Panel(child=gridplot([[p2, p_t2_fail_pos[0]],[p_t2_fail_pos[1],p_sn_thickness]]), title="MECO Tool 2 Data") #second tab of the dashboard
 tab4 = Panel(child=gridplot([[p_bt1_sul, p_bt1_cu], [p_bt1_hcl, p_bt1_acid]]), title="Bath Titrations Tool 1")
 tab5 = Panel(child=gridplot([[p_bt2_tin, p_bt2_pb, p_bt2_sn_additive], [p_bt2_acid, p_bt2_predip, None]]), title="Bath Titrations Tool 2")

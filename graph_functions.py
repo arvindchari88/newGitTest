@@ -392,3 +392,44 @@ def create_histogram (mu, sigma, weights, bin_size, low_spec, high_spec, cu1_acc
   p1.xaxis.axis_label = 'Weight (g)'
   p1.yaxis.axis_label = 'Pr(x)'
   return p1
+
+
+
+def thickness_uniformity(c_thickness_stats, l_thickness_stats, r_thickness_stats, cu1_measured, cu1_accepted, meco_c_thickness, cl):
+  p4a = figure(plot_width=700, plot_height=400, title="Meco Thickness Comparison")
+
+  c_measurements = [1,2,3,4,5,6,7,8]
+  l_measurements = [1,5,8]
+  r_measurements = [1,5,8]
+
+  #Center thickness
+  p4a.line(c_measurements, c_thickness_stats, line_width=2, legend='Center')
+  p4a.circle(c_measurements, c_thickness_stats, fill_color='white', size=8)
+  #Left thickness
+  p4a.line(l_measurements, l_thickness_stats, line_width=2, legend='Left', color='orange')
+  p4a.circle(l_measurements, l_thickness_stats, fill_color='white', size=8)
+  #Right thickness
+  p4a.line(r_measurements, r_thickness_stats, line_width=2, legend='Right', color='purple')
+  p4a.circle(r_measurements, r_thickness_stats, fill_color='white', size=8)
+  #Total number of measured grids
+  p4a.line(c_measurements, c_thickness_stats, line_width=2, legend='Total Measured: ' + str(cu1_measured), color='green')
+  #Sampling Percentage
+  p4a.line(c_measurements, c_thickness_stats, line_width=2, legend='Total Accepted: ' + str(len(cu1_accepted)), color='green')
+
+  p4a.xaxis.axis_label = 'Measurement Number'
+  p4a.yaxis.axis_label = 'Thickness (mm)'
+
+  #Normalize Center Thicknesses
+  normalized_thickness = statfunctions.normalize(meco_c_thickness)
+  n_thickness_stats = statfunctions.liststats(normalized_thickness, cl)
+
+  p4b = figure(plot_width=700, plot_height=400, title="Center Thickness Control (Normalized)")
+  p4b.line(c_measurements, n_thickness_stats['avg'], line_width=2, legend='Center')
+  p4b.circle(c_measurements, n_thickness_stats['avg'], fill_color='white', size=8)
+  #STD lines
+  p4b.line(c_measurements, n_thickness_stats['ucl'], line_width=1, line_color='red', legend='2 Std Lines')
+  p4b.line(c_measurements, n_thickness_stats['lcl'], line_width=1, line_color='red')
+  p4b.xaxis.axis_label = 'Measurement Number'
+  p4b.yaxis.axis_label = 'Thickness (mm)'
+
+  return (p4a, p4b)

@@ -33,16 +33,21 @@ import pyodbc
 from collections import Counter
 from random import randint
 import getpass
+import inspect, os #Modules used to get the directory and then create a place to store the generated files
 
 ##############################################################################
 #II.Connecting to the Database
 ##############################################################################
-p = getpass.getpass()
+while True:  
+  try:
+    p = getpass.getpass()
+    cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=182.52.58.33\GTAT_GRIDS\SQLEXPRESS, 1433;DATABASE=GTAT_GRIDS;UID=db1_readonly;PWD=' + p)
+    break
+  except pyodbc.Error:
+    print "Wrong Password, try again..."
 
-cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=182.52.58.33\GTAT_GRIDS\SQLEXPRESS, 1433;DATABASE=GTAT_GRIDS;UID=db1_readonly;PWD=' + p)
+print "Correct Password! Processing your results..."
 cursor = cnxn.cursor()
-
-
 #Fetch the start and end dates from the user input
 #Assign these dates to variables to use later
 first = sys.argv[1]
@@ -447,34 +452,71 @@ for row in rows :
 ######################################################################################
 #III. Start Bokeh Plotting
 ######################################################################################
+file_folder = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) + '\\html_archive\\' #Finds the absolute file path of the 
+
 if first == last:
 	output_file(first + '.html', title=first)
 else:
-	output_file(first + ' to ' + last + '.html', title=first + ' to ' + last)
+	output_file(file_folder + first + ' to ' + last + '.html', title=first + ' to ' + last)
 
 cl = 2 #control limit multiplier
 
+#FOR ALL OF THE FOLLOWING GRAPHS, functions were created in graph_functions.py to avoid writing the code multiple times 
 ######################################################################################
 #Cu1 Plot
-######################################################################################
 cu1_stats = statfunctions.stats(cu1_weight, cl)
 p1 = graph_functions.create_histogram(cu1_stats['avg'], cu1_stats['std'], cu1_weight, 50, 1.2, 1.6, cu1_accepted, t1_failure_pos)
 
 ######################################################################################
 #Cu2 Plot
-######################################################################################
 cu2_stats = statfunctions.stats(cu2_weight, cl)
 p2 = graph_functions.create_histogram(cu2_stats['avg'], cu2_stats['std'], cu2_weight, 50, .2, .55, cu2_accepted, t2_failure_pos)
 
 ######################################################################################
 #Meco GridThicknesses
 ######################################################################################
-p3 = graph_functions.thickness_uniformity(statfunctions.liststats(meco_c_thickness, cl)['avg'], statfunctions.liststats(meco_l_thickness, cl)['avg'], statfunctions.liststats(meco_r_thickness, cl)['avg'], cu1_measured, cu1_accepted, meco_c_thickness, cl)[0]
+#p3 = graph_functions.thickness_uniformity(statfunctions.liststats(meco_c_thickness, cl)['avg'], statfunctions.liststats(meco_l_thickness, cl)['avg'], statfunctions.liststats(meco_r_thickness, cl)['avg'], cu1_measured, cu1_accepted, meco_c_thickness, cl)[0]
 
-#FOR ALL OF THE FOLLOWING GRAPHS, functions were created in graph_functions.py to avoid writing the code multiple times 
+c_thickness_stats = statfunctions.liststats(meco_c_thickness, cl)
+l_thickness_stats = statfunctions.liststats(meco_l_thickness, cl)
+r_thickness_stats = statfunctions.liststats(meco_r_thickness, cl)
+
+p4a = figure(plot_width=700, plot_height=400, title="Meco Thickness Comparison")
+c_measurements = [1,2,3,4,5,6,7,8]
+l_measurements = [1,5,8]
+r_measurements = [1,5,8]
+#Center thickness
+p4a.line(c_measurements, c_thickness_stats['avg'], line_width=2, legend='Center')
+p4a.circle(c_measurements, c_thickness_stats['avg'], fill_color='white', size=8)
+#Left thickness
+p4a.line(l_measurements, l_thickness_stats['avg'], line_width=2, legend='Left', color='orange')
+p4a.circle(l_measurements, l_thickness_stats['avg'], fill_color='white', size=8)
+#Right thickness
+p4a.line(r_measurements, r_thickness_stats['avg'], line_width=2, legend='Right', color='purple')
+p4a.circle(r_measurements, r_thickness_stats['avg'], fill_color='white', size=8)
+#Total number of measured grids
+p4a.line(c_measurements, c_thickness_stats['avg'], line_width=2, legend='Total Measured: ' + str(cu1_measured), color='green')
+#Sampling Percentage
+p4a.line(c_measurements, c_thickness_stats['avg'], line_width=2, legend='Total Accepted: ' + str(len(cu1_accepted)), color='green')
+
+p4a.xaxis.axis_label = 'Measurement Number'
+p4a.yaxis.axis_label = 'Thickness (mm)'
+
+#Normalize Center Thicknesses
+normalized_thickness = statfunctions.normalize(meco_c_thickness)
+n_thickness_stats = statfunctions.liststats(normalized_thickness, cl)
+
+p4b = figure(plot_width=700, plot_height=400, title="Center Thickness Control (Normalized)")
+p4b.line(c_measurements, n_thickness_stats['avg'], line_width=2, legend='Center')
+p4b.circle(c_measurements, n_thickness_stats['avg'], fill_color='white', size=8)
+#STD lines
+p4b.line(c_measurements, n_thickness_stats['ucl'], line_width=1, line_color='red', legend='2 Std Lines')
+p4b.line(c_measurements, n_thickness_stats['lcl'], line_width=1, line_color='red')
+p4b.xaxis.axis_label = 'Measurement Number'
+p4b.yaxis.axis_label = 'Thickness (mm)'
+
 ##################################################################
 #Bath Titrations Tool 1 Plot
-##################################################################
 p_bt1_sul = graph_functions.titrations(sulfuric_acid, sulfuric_acid_tu, "Sulfuric Acid (90-110 g/L)", "green", "top_up_cu")
 p_bt1_cu = graph_functions.titrations(copper_sulfate, copper_sulfate_tu, "Copper Sulfate (175-220 g/L)", "blue", "top_up_sul")
 p_bt1_hcl = graph_functions.titrations(hcl, hcl_tu, "HCl (60-100 mg/L)", "red", "top_up_hcl")
@@ -482,7 +524,6 @@ p_bt1_acid = graph_functions.titrations(cu_acid_clean, cu_acid_clean_tu, "Acid C
 
 ##################################################################
 #Bath Titrations Tool 2 Plot
-##################################################################
 p_bt2_tin = graph_functions.titrations(tin, tin_tu, "Tin (53-60 g/L)", "blue", "top_up_tin")
 p_bt2_pb = graph_functions.titrations(pb, pb_tu, "Pb (14-16 g/L)", "green", "top_up_pb")
 p_bt2_sn_additive = graph_functions.titrations(sn_additive, sn_additive_tu, "Additive (90-110 g/L)", "red", "top_up_sn_additive")
@@ -491,8 +532,6 @@ p_bt2_predip= graph_functions.titrations(predip, predip_tu, "Acid Predip (175-22
 
 ##################################################################
 #Copper Resistivity Measurements
-##################################################################
-
 p_res = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Resistibity (uohm-cm)", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title="Resistivity")
 p_res.circle(res_x, res_y, fill_color="white", size=8)
 
@@ -504,7 +543,6 @@ p_res.line(res_x, res_stats['avg']-2*res_stats['std'], line_width=1, line_color=
 
 ##################################################################
 #Tin Lead Thickness and Percentages
-##################################################################
 sn_thickness_stats = statfunctions.liststats(sn_thickness_y, cl)
 sn_pct_stats = statfunctions.liststats(sn_pct_y, cl)
 
@@ -516,32 +554,35 @@ p_sn_thickness.circle(sn_thickness_x, sn_thickness_stats['avg'], fill_color="whi
 
 ##################################################################
 #Tool 1 and 2 Paretos
-##################################################################
 p_t1_fail_pos = graph_functions.failure_pareto(cu1_accepted, t1_failure_pos)
 p_t2_fail_pos = graph_functions.failure_pareto(cu2_accepted, t2_failure_pos)
 
 ##################################################################
-#Tool 1 and 2 Daily Yield Plots
-##################################################################
-#yield_plot1 = graph_functions.yield_by_day(cu1_accepted, t1_failure_pos, t1_failure_re)
-#yield_plot2 = graph_functions.yield_by_day(cu2_accepted, t2_failure_pos, t2_failure_re)
-
-##################################################################
 #Mandrel Uses BoxPlot
+if len(mandrel_ids) > 0:
+  mandrel_uses = []
+  mandrel_uses.append(Counter(mandrel_ids).keys())  
+  mandrel_uses.append(Counter(mandrel_ids).values())
+  mandrel_uses[1][:] = [x/4 for x in mandrel_uses[1]]
+  mold_reuse = Histogram(mandrel_uses[1], width=500, height=500, bins=3, xlabel = "Number of Uses", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", title="# of Uses vs Count", density=False)
 ##################################################################
-mandrel_uses = []
-mandrel_uses.append(Counter(mandrel_ids).keys())  
-mandrel_uses.append(Counter(mandrel_ids).values())
-mandrel_uses[1][:] = [x/4 for x in mandrel_uses[1]]
-mold_reuse = Histogram(mandrel_uses[1], width=500, height=500, bins=len(mandrel_uses[1]), xlabel = "Number of Uses", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", title="# of Uses vs Count", density=False)
+#Create Panel layout
+##################################################################
+  tab1 = Panel(child=gridplot([[p1, p_t1_fail_pos[0]], [p4a, p_t1_fail_pos[1]]]), title="MECO Tool 1 Weights") #first tab of the dashboard
+  tab2 = Panel(child=gridplot([[p2, p_t2_fail_pos[0]],[p_t2_fail_pos[1],p_sn_thickness]]), title="MECO Tool 2 Data") #second tab of the dashboard
+  tab4 = Panel(child=gridplot([[p_bt1_sul, p_bt1_cu], [p_bt1_hcl, p_bt1_acid]]), title="Bath Titrations Tool 1")
+  tab5 = Panel(child=gridplot([[p_bt2_tin, p_bt2_pb, p_bt2_sn_additive], [p_bt2_acid, p_bt2_predip, None]]), title="Bath Titrations Tool 2")
+  tab6 = Panel(child=hplot(p_res), title="Resistivity")
+  tab7 = Panel(child=hplot(mold_reuse), title="Mandrel Data")
 
-#create Panel layout
-tab1 = Panel(child=gridplot([[p1, p_t1_fail_pos[0]], [p3, p_t1_fail_pos[1]]]), title="MECO Tool 1 Weights") #first tab of the dashboard
-tab2 = Panel(child=gridplot([[p2, p_t2_fail_pos[0]],[p_t2_fail_pos[1],p_sn_thickness]]), title="MECO Tool 2 Data") #second tab of the dashboard
-tab4 = Panel(child=gridplot([[p_bt1_sul, p_bt1_cu], [p_bt1_hcl, p_bt1_acid]]), title="Bath Titrations Tool 1")
-tab5 = Panel(child=gridplot([[p_bt2_tin, p_bt2_pb, p_bt2_sn_additive], [p_bt2_acid, p_bt2_predip, None]]), title="Bath Titrations Tool 2")
-tab6 = Panel(child=hplot(p_res), title="Resistivity")
-tab7 = Panel(child=hplot(mold_reuse), title="Mandrel Data")
+  tabs = Tabs(tabs=[tab1, tab2, tab4, tab5, tab6, tab7])
+else:
+  tab1 = Panel(child=gridplot([[p1, p_t1_fail_pos[0]], [p4a, p_t1_fail_pos[1]]]), title="MECO Tool 1 Weights") #first tab of the dashboard
+  tab2 = Panel(child=gridplot([[p2, p_t2_fail_pos[0]],[p_t2_fail_pos[1],p_sn_thickness]]), title="MECO Tool 2 Data") #second tab of the dashboard
+  tab4 = Panel(child=gridplot([[p_bt1_sul, p_bt1_cu], [p_bt1_hcl, p_bt1_acid]]), title="Bath Titrations Tool 1")
+  tab5 = Panel(child=gridplot([[p_bt2_tin, p_bt2_pb, p_bt2_sn_additive], [p_bt2_acid, p_bt2_predip, None]]), title="Bath Titrations Tool 2")
+  tab6 = Panel(child=hplot(p_res), title="Resistivity")
 
-tabs = Tabs(tabs=[tab1, tab2, tab4, tab5, tab6, tab7])
+  tabs = Tabs(tabs=[tab1, tab2, tab4, tab5, tab6])
+
 show(tabs)

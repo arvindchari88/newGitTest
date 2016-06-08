@@ -41,7 +41,7 @@ import inspect, os #Modules used to get the directory and then create a place to
 while True:  
   try:
     p = getpass.getpass()
-    cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=182.52.58.33\GTAT_GRIDS\SQLEXPRESS, 1433;DATABASE=GTAT_GRIDS;UID=db1_readonly;PWD=' + p)
+    cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=GTAT-PC\SQLExpress, 1433;DATABASE=GTAT_GRIDS;UID=db1_readonly;PWD=' + p)
     break
   except pyodbc.Error:
     print "Wrong Password, try again..."
@@ -84,6 +84,7 @@ t1_failure_pos = [] #A list of lists of failure positions e.g. ((Left cage 5-8, 
 
 bad_outputs = [] #If rejected out of all error checks, what is the ID we need to find
 mandrel_ids = [] #A list of mandrel_ids in order to get usage counts later
+bad_run = []
 
 #LIST OF THE QUERY OUTPUTS IN ORDER (How to find a variable from row[x])
 #0-rd_weight,
@@ -141,6 +142,8 @@ for row in rows :
       cu1_id.append(row[1]) 
       cu1_tool.append(1)
       cu1_weight.append(output[0])
+      if output[0] > 5:
+        bad_outputs.append((row[1], row[0], 'Tool 1'))
 
       #Check if ther is a thickness sample taken. If it is, check each value exists before adding it to the graph
       #row[20]=1 indicates if the sample was taken
@@ -154,72 +157,86 @@ for row in rows :
           output_thickness.append(float(row[2]))
           meco_left_list.append(output_thickness[0])
         else :
+          output_thickness.append(.1)
           meco_left_list.append(.1)
         if row[3] != None :
           output_thickness.append(float(row[3]))
           meco_center_list.append(output_thickness[1])
         else :
-          meco_center_list.append(output_thickness[0])
+          output_thickness.append(.1)
+          meco_center_list.append(.1)
         if row[4] != None :
           output_thickness.append(float(row[4]))
           meco_right_list.append(output_thickness[2])
         else :
-          meco_right_list.append(output_thickness[1])
+          output_thickness.append(.1)
+          meco_right_list.append(.1)
         if row[5] != None :
           output_thickness.append(float(row[5]))
           meco_center_list.append(output_thickness[3])
         else :
-          meco_center_list.append(output_thickness[2])
+          output_thickness.append(.1)
+          meco_center_list.append(.1)
         if row[6] != None :
           output_thickness.append(float(row[6]))
           meco_center_list.append(output_thickness[4])
         else :
-          meco_center_list.append(output_thickness[3])
+          output_thickness.append(.1)
+          meco_center_list.append(.1)
         if row[7] != None :
           output_thickness.append(float(row[7]))
           meco_center_list.append(output_thickness[5])
         else :
-          meco_center_list.append(output_thickness[4])
+          output_thickness.append(.1)
+          meco_center_list.append(.1)
         if row[8] != None :
           output_thickness.append(float(row[8]))
           meco_left_list.append(output_thickness[6])
         else :
-          meco_left_list.append(output_thickness[5])
+          output_thickness.append(.1)
+          meco_left_list.append(.1)
         if row[9] != None :
           output_thickness.append(float(row[9]))
           meco_center_list.append(output_thickness[7])
         else :
-          meco_center_list.append(output_thickness[6])
+          output_thickness.append(.1)
+          meco_center_list.append(.1)
         if row[10] != None :
           output_thickness.append(float(row[10]))
           meco_right_list.append(output_thickness[8])
         else :
-          meco_right_list.append(output_thickness[7])
+          output_thickness.append(.1)
+          meco_right_list.append(.1)
         if row[11] != None :
           output_thickness.append(float(row[11]))
           meco_center_list.append(output_thickness[9])
         else :
-          meco_center_list.append(output_thickness[8])
+          output_thickness.append(.1)
+          meco_center_list.append(.1)
         if row[12] != None :
           output_thickness.append(float(row[12]))
           meco_center_list.append(output_thickness[10])
         else :
-          meco_center_list.append(output_thickness[9])
+          output_thickness.append(.1)
+          meco_center_list.append(.1)
         if row[13] != None :
           output_thickness.append(float(row[13]))
           meco_left_list.append(output_thickness[11])
         else :
-          meco_left_list.append(output_thickness[10])
+          output_thickness.append(.1)
+          meco_left_list.append(.1)
         if row[14] != None :
           output_thickness.append(float(row[14]))
           meco_center_list.append(output_thickness[12])
         else :
-          meco_center_list.append(output_thickness[11])
+          output_thickness.append(.1)
+          meco_center_list.append(.1)
         if row[15] != None :
           output_thickness.append(float(row[15]))
           meco_right_list.append(output_thickness[13])
         else :
-          meco_right_list.append(output_thickness[12])
+          output_thickness.append(.1)
+          meco_right_list.append(.1)
 
         meco_c_thickness.append(meco_center_list)
         meco_l_thickness.append(meco_left_list)
@@ -312,6 +329,8 @@ for row in rows_T2 :
       output2.append(float(row[0]))
       output3.append(float(row[1]))
       net_weight = output2[0] - output3[0]
+      if output2[0] > 5:
+        bad_outputs.append((row[2], row[0], 'Tool 2'))
 
       #if isinstance(net_weight, float) :
       #if(net_weight > 0 and net_weight < .7) :
@@ -532,7 +551,7 @@ p_bt2_predip= graph_functions.titrations(predip, predip_tu, "Acid Predip (175-22
 
 ##################################################################
 #Copper Resistivity Measurements
-p_res = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Resistibity (uohm-cm)", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title="Resistivity")
+p_res = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Resistibity (uohm-cm)", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title="Resistivity")
 p_res.circle(res_x, res_y, fill_color="white", size=8)
 
 res_stats = statfunctions.stats(res_y, cl)
@@ -546,11 +565,14 @@ p_res.line(res_x, res_stats['avg']-2*res_stats['std'], line_width=1, line_color=
 sn_thickness_stats = statfunctions.liststats(sn_thickness_y, cl)
 sn_pct_stats = statfunctions.liststats(sn_pct_y, cl)
 
-p_sn_pct = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Sn Percentage", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title="Tin Percentage")
-p_sn_thickness = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Sn Thickness", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title="Tin Lead Thickness")
+p_sn_pct = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Sn Percentage", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title="Tin Percentage")
+p_sn_thickness = figure(plot_width=650, plot_height=500, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Sn Thickness", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title="Tin Lead Thickness")
 
-p_sn_pct.circle(sn_pct_x, sn_pct_stats['avg'], fill_color="white", size=8)
-p_sn_thickness.circle(sn_thickness_x, sn_thickness_stats['avg'], fill_color="white", size=8)
+if len(sn_pct_x) > 0:
+  p_sn_pct.circle(sn_pct_x, sn_pct_stats['avg'], fill_color="white", size=8)
+
+if len(sn_thickness_x) > 0:
+  p_sn_thickness.circle(sn_thickness_x, sn_thickness_stats['avg'], fill_color="white", size=8)
 
 ##################################################################
 #Tool 1 and 2 Paretos

@@ -35,9 +35,14 @@ def yield_by_day(daily_accepted, failure_pos) :
     if date_without_time_acc == current_date_acc:
       accept_by_day.append(date_without_time_acc) 
     else:
-      list_accept_by_day.append(accept_by_day) #Creates a list of lists, each list containing the number of grids accepted on a certain day
-      accept_by_day = [date_without_time_acc]
-      current_date_acc = date_without_time_acc
+      if len(accept_by_day) > 0:
+        list_accept_by_day.append(accept_by_day) #Creates a list of lists, each list containing the number of grids accepted on a certain day
+        accept_by_day = [date_without_time_acc]
+        current_date_acc = date_without_time_acc
+      else:
+        list_accept_by_day.append(.9) #Creates a list of lists, each list containing the number of grids accepted on a certain day
+        accept_by_day = [date_without_time_acc]
+        current_date_acc = date_without_time_acc
 
   current_date_rej = datetime.date(failure_pos[0][2].year, failure_pos[0][2].month, failure_pos[0][2].day) #The failure_pos format is [cage 5-8, A,date,Failure_re]
   reject_by_day = [] #Holds a temporary list of all the reject reasons for a given day
@@ -46,9 +51,15 @@ def yield_by_day(daily_accepted, failure_pos) :
     if date_without_time_rej == current_date_rej:
       reject_by_day.append(failure_pos[i][3]) #Every rejected grid has a failure reason. The lenght of this list determines the number of failures in a day
     else:
-      list_reject_by_day.append(reject_by_day) #A list of lists, each list containing all the errors on a specific day. 
-      reject_by_day = [failure_pos[i][3]]
-      current_date_rej = date_without_time_rej
+      if len(reject_by_day) > 0:
+        list_reject_by_day.append(reject_by_day) #A list of lists, each list containing all the errors on a specific day. 
+        reject_by_day = [failure_pos[i][3]]
+        current_date_rej = date_without_time_rej
+      else:
+        list_reject_by_day.append(.9) #A list of lists, each list containing all the errors on a specific day. 
+        reject_by_day = [failure_pos[i][3]]
+        current_date_rej = date_without_time_rej
+
 
   #Take care of the case when only 1 day is present in the range
   if len(list_accept_by_day) == 0:
@@ -56,7 +67,7 @@ def yield_by_day(daily_accepted, failure_pos) :
   if len(list_reject_by_day) == 0:
     list_reject_by_day.append(reject_by_day)
 
-  yield_plot = figure(plot_width=500, plot_height=500, x_axis_label = "Days into Set", y_axis_label="Yield", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title="Yield by Day")
+  yield_plot = figure(plot_width=500, plot_height=500, x_axis_label = "Days into Set", y_axis_label="Yield", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title="Yield by Day")
   temp_yields = []
   temp_dates = []
   temp_colors = choose_colors(list_reject_by_day)[0]
@@ -132,7 +143,7 @@ def create_legend(x_pos, y_pos, color_dict, figure, all_failures, num_fails_to_l
   for legend,color in color_dict.iteritems() :
     figure.circle(x=x_pos, y=y_pos, radius=0, color=color, legend=legend)
  
-  figure.legend.location = "bottom_left"
+  figure.legend.orientation = "bottom_left"
 
 
 #Take a list of failure positions and failure reasons and orgainize them by where they are on the grid, and how frequently they occured
@@ -331,7 +342,7 @@ def failure_pareto(cu1_accepted, t1_failure_pos) :
 
 
 def titrations(tit_meas, tit_tu, name, tit_color, y2_name) :
-  tit_plot = figure(plot_width=500, plot_height=350, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Concentration (g/L)", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color = 'beige', title=name)
+  tit_plot = figure(plot_width=500, plot_height=350, x_axis_type="datetime", x_axis_label = "Date", y_axis_label="Concentration (g/L)", tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill = 'beige', title=name)
 
   #concentration, date, tool
   tit_x = []
@@ -360,7 +371,7 @@ def titrations(tit_meas, tit_tu, name, tit_color, y2_name) :
 
 
 def create_histogram (mu, sigma, weights, bin_size, low_spec, high_spec, cu1_accepted, t1_failure_pos):
-  p1 = figure(title="Normal Distribution",tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill_color="#E8DDCB")
+  p1 = figure(title="Normal Distribution",tools = "pan,box_select,box_zoom,xwheel_zoom,reset,save,resize", background_fill="#E8DDCB")
 
   measured = np.random.normal(mu, sigma, 1000)
   hist, edges = np.histogram(weights, density=True, bins=bin_size)
@@ -388,7 +399,7 @@ def create_histogram (mu, sigma, weights, bin_size, low_spec, high_spec, cu1_acc
 
   p1.xaxis.bounds = (np.amin(weights), np.amax(weights))
 
-  p1.legend.location = "top_left"
+  p1.legend.orientation = "top_left"
   p1.xaxis.axis_label = 'Weight (g)'
   p1.yaxis.axis_label = 'Pr(x)'
   return p1
